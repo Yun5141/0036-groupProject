@@ -115,8 +115,12 @@ def plotGraph(data):
 def selectFeatures(data):
     pass
 
-# -------------------- Model (by Yanke)(haven't re-organized)------------------------- 
-
+# -------------------- Model (by Yanke)------------------------- 
+'''
+- haven't re-organized
+- only involves a single model, logistic regression.
+- Yanke is now working on model combination (as suggested in the marking guidelines)
+'''
 # ---------------
 # training_data2 = pd.read_csv('/content/training_data_with_distance.csv')
 # a = []
