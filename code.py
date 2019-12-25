@@ -115,7 +115,7 @@ def plotGraph(data):
 def selectFeatures(data):
     pass
 
-# -------------------- Model (by Yanke)------------------------- 
+# -------------------- Model (by Yanke)(haven't re-organized)------------------------- 
 
 # ---------------
 # training_data2 = pd.read_csv('/content/training_data_with_distance.csv')
