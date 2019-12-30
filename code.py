@@ -18,11 +18,11 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, roc_curve, precision_recall_curve
 
 import io
-from geopy.distance import geodesic 
-from geopy.distance import great_circle 
+from geopy.distance import geodesic
+from geopy.distance import great_circle
 
 import datetime as dt
-
+from collections import deque
 
 # ------------------- import data -------------------------
 url="https://raw.githubusercontent.com/Yun5141/comp0036/master/elp_up-to-date_data.csv"
@@ -48,7 +48,7 @@ def separateData(data):
         dataframe_collection[year] = data[(data.Date > dt.datetime(year,8,1,0,0) ) & (data.Date < dt.datetime(year+1, 6, 1,0,0))]
 
     return dataframe_collection
-        
+
 data = separateData(training_data)
 for key in data.keys():
     print("\n" +"="*40)
@@ -61,7 +61,7 @@ for key in data.keys():
 
 # ------------------- Feature Construction ------------------——————————
 
-# get the distance needed to travel for the away team   [done] 
+# get the distance needed to travel for the away team   [done]
 def getDistance(training_data, geometricData):
 
   Teams = training_data.HomeTeam
@@ -80,7 +80,7 @@ def getDistance(training_data, geometricData):
   DIS = pd.Series(array)
   training_data.loc[:,'DIS'] = DIS
 
-#getDistance(training_data, geometricData) 
+#getDistance(training_data, geometricData)
 #print(training_data)
 
 # get match week
@@ -97,11 +97,78 @@ def getAWR(data):
 
 # 计算每个队周累计净胜球数量（goal_diff)
 def getGoalsDiff(data):
-    pass
+    teams = {}
+    HTGD = []
+    ATGD = []
+
+    for i in data.groupby('HomeTeam').mean().T.columns:
+        teams[i] = []
+
+    # 对于每一场比赛
+    for i in range(len(playing_stat)):
+        HTGS = data.iloc[i]['FTHG']
+        ATGS = data.iloc[i]['FTAG']
+
+        try:
+            ht = teams[data.iloc[i].HomeTeam].pop()
+            at = teams[data.iloc[i].AwayTeam].pop()
+        except:
+            ht = 0
+            at = 0
+
+        HTGD.append(ht)
+        ATGD.append(at)
+        ht = ht + HTGS-ATGS
+        teams[data.iloc[i].HomeTeam].append(ht)
+        at = at + ATGS-HTGS
+        teams[data.iloc[i].AwayTeam].append(at)
+
+    data.loc[:,'HTGD'] = HTGD
+    data.loc[:,'ATGD'] = ATGD
+    return data
 
 # 统计每支队伍最近三场比赛的表现
 def getPerformanceOfLast3Matches(data):
-    pass
+    teams = {}
+    for i in data.groupby('HomeTeam').mean().T.columns:
+        teams[i] = deque(['UnKnown', 'UnKnown', 'UnKnown'])
+
+    HM1 = []
+    AM1 = []
+    HM2 = []
+    AM2 = []
+    HM3 = []
+    AM3 = []
+
+    for i in range(len(playing_stat)):
+        HM3.append(teams[data.iloc[i].HomeTeam].popleft())
+        HM2.append(teams[data.iloc[i].HomeTeam][0])
+        HM1.append(teams[data.iloc[i].HomeTeam][1])
+        AM3.append(teams[data.iloc[i].AwayTeam].popleft())
+        AM2.append(teams[data.iloc[i].AwayTeam][0])
+        AM1.append(teams[data.iloc[i].AwayTeam][1])
+
+        if playing_stat.iloc[i].FTR == 'H':
+            # 主场 赢，则主场记为赢，客场记为输
+            teams[data.iloc[i].HomeTeam].append('W')
+            teams[data.iloc[i].AwayTeam].append('L')
+        elif playing_stat.iloc[i].FTR == 'A':
+            # 客场 赢，则主场记为输，客场记为赢
+            teams[data.iloc[i].AwayTeam].append('W')
+            teams[data.iloc[i].HomeTeam].append('L')
+        else:
+            # 平局
+            teams[data.iloc[i].AwayTeam].append('D')
+            teams[data.iloc[i].HomeTeam].append('D')
+
+    data.loc[:,'HM1'] = HM1
+    data.loc[:,'AM1'] = AM1
+    data.loc[:,'HM2'] = HM2
+    data.loc[:,'AM2'] = AM2
+    data.loc[:,'HM3'] = HM3
+    data.loc[:,'AM3'] = AM3
+
+    return data
 
 
 # --------------- Data Exploration -----------------
@@ -115,7 +182,7 @@ def plotGraph(data):
 def selectFeatures(data):
     pass
 
-# -------------------- Model (by Yanke)------------------------- 
+# -------------------- Model (by Yanke)-------------------------
 '''
 - haven't re-organized
 - only involves a single model, logistic regression.
@@ -148,9 +215,9 @@ def referee_to_num(string):
 def team_to_num(string):
     if string in result:
         return result[string]
-training_data.HomeTeam = training_data.HomeTeam.apply(team_to_num)   
-training_data.AwayTeam = training_data.AwayTeam.apply(team_to_num) 
-training_data.Referee = training_data.Referee.apply(referee_to_num) 
+training_data.HomeTeam = training_data.HomeTeam.apply(team_to_num)
+training_data.AwayTeam = training_data.AwayTeam.apply(team_to_num)
+training_data.Referee = training_data.Referee.apply(referee_to_num)
 
 def clean_dataset(df):
     assert isinstance(df, pd.DataFrame), "df needs to be a pd.DataFrame"
@@ -160,7 +227,7 @@ def clean_dataset(df):
 clean_dataset(training_data)
 
 X_all = training_data.drop(['FTR'],1).drop(['FTHG'],1).drop(['FTAG'],1)
-y_all = training_data['FTR'] 
+y_all = training_data['FTR']
 
 
 X_train, X_test, y_train, y_test = train_test_split(X_all, y_all,test_size = 0.3,random_state = 2,stratify = y_all)
@@ -186,6 +253,6 @@ y_lr_prob = lr.predict_proba(X_test)[:, -1]  # probability estimates of the posi
 # create a dictionary variable with keys being algorithm names and values being classification accuracy
 
 accuracy = accuracy_score(y_test, y_lr)
-    
+
 
 print(accuracy)
