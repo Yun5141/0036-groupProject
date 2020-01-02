@@ -5,11 +5,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from os import chdir
+
+# !pip install sklearn
+from sklearn import model_selection
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-# you may need to import sklearn.lda.LDA and sklearn.qda.QDA instead
-# depending on which version you have installed
+# may need to import sklearn.lda.LDA and sklearn.qda.QDA instead
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from sklearn.linear_model import LogisticRegression
@@ -18,10 +20,17 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, roc_curve, precision_recall_curve
 
 import io
-from geopy.distance import geodesic
-from geopy.distance import great_circle
 
+# !pip install geopy
+from geopy.distance import geodesic 
+from geopy.distance import great_circle 
+
+import time
 import datetime as dt
+from datetime import datetime
+
+import math
+
 from collections import deque
 
 # ------------------- import data -------------------------
@@ -33,18 +42,41 @@ geometricData = pd.read_csv(url)
 
 # ------------------ Data Pre-Processing -------------------
 
-# cleaning data (去掉不要的)
+# cleaning data (去掉不要的)    [not sure]
 def dataCleaning(raw_data):
   raw_data.drop('Referee', axis = 1, inplace = True)
 
 # ********************************************
-# 把数据的赛季分开 [not sure if necessary]
-def separateData(data):
-    data.Date = pd.to_datetime(data.Date)
+# unify the different date formats and convert the type from str to timestamp   [done]
+def unifyDateFormat(data):
 
+    if not isinstance(data.Date[0],str):
+        return
+
+    newDate = []
+    for _, matchInfo in data.iterrows():
+        if len(matchInfo.Date) == 8 :
+            newDate.append( pd.to_datetime(matchInfo.Date, format="%d/%m/%y" ))
+        elif len(matchInfo.Date) == 10 :
+            newDate.append(  pd.to_datetime(matchInfo.Date, format="%d/%m/%Y" ))
+    
+    data['Date'] = pd.Series(newDate).values
+
+unifyDateFormat(training_data)
+
+# ------------------ Inital Data Exploration -------------------
+# ********************************************
+# !!! 【report中: 第一步先检查有无空值】
+# will print out the number of null value in each column
+training_data.isnull().sum()
+#result: there is no empty value at the initial stage     
+
+# ********************************************
+# to see the number of matches each year / season
+def separateData(data):
     dataframe_collection = {}
 
-    for year in range(2008, 2019):
+    for year in range(2008, 2020):
         dataframe_collection[year] = data[(data.Date > dt.datetime(year,8,1,0,0) ) & (data.Date < dt.datetime(year+1, 6, 1,0,0))]
 
     return dataframe_collection
@@ -55,13 +87,39 @@ for key in data.keys():
     print(key)
     print("-"*40)
     print(data[key])
-# Bug：会漏数据，比如2008年表中最后数据的时间应为2009-05-24，但结果却是2009-05-12；
-#       如果单独判定2009-05-24在不在范围内，结果又是正确的:
-# print((training_data.Date[379] > dt.datetime(2008,8,1)) & (training_data.Date[379] < dt.datetime(2009,6,1)) )
+
+#result: 380 rows * 11 dataframes + 170 rows * 1 dataframes = 4350 rows
+
+# ********************************************
+# !!! 【在数据正式处理前后各用一次这个函数，即两次的data exploration section】
+def checkAverageWinRate(data, resultWinner):
+
+    if resultWinner not in ['H', 'A', 'D']:
+        raise Exception('The second argument should only take values within [“H”,“A”,“D”]')
+
+    predictions = 0
+    for _, matchInfo in data.iterrows():
+        
+        if matchInfo['FTR'] == resultWinner:
+          predictions += 1
+
+    return predictions / len(data)
+
+#prediction = checkAverageWinRate(training_data, 'H')
+
+#results of raw data (ie, when nothing applied to the training data): 
+#home team = 0.4606896551724138 ~ 0.461; 
+#away team = 0.2910344827586207 ~ 0.291;
+#draw = 0.2482758620689655 ～ 0.248
+
+#results of processed data:
+#home team = ; 
+#away team = ;
+#draw = 
 
 # ------------------- Feature Construction ------------------——————————
-
-# get the distance needed to travel for the away team   [done]
+#*******************************
+# get the distance needed to travel for the away team   [done] 
 def getDistance(training_data, geometricData):
 
   Teams = training_data.HomeTeam
@@ -78,81 +136,166 @@ def getDistance(training_data, geometricData):
     array.append(great_circle(home_location, away_location).km)
 
   DIS = pd.Series(array)
-  training_data.loc[:,'DIS'] = DIS
+  training_data.loc[:,'DIS'] = DIS.values
 
-#getDistance(training_data, geometricData)
+#getDistance(training_data, geometricData) 
 #print(training_data)
 
-# get match week
-def getMW(data):
-    pass
+#*******************************
+# get match week    [done]
+def getMW(data, startYear):  
+    MW = []
+    Flag = 0
+    year = startYear
 
-# get the interval time between two matches for each team   [by Yi]
-def getIntervalTime(data):
-    pass
+    for _, matchInfo in data.iterrows():
+        checkYear = (matchInfo.Date > dt.datetime(year,8,1,0,0)) & (matchInfo.Date < dt.datetime(year+1, 6, 1,0,0)) 
+        
+        if not checkYear:
+            year += 1
+            Flag = 0
+    
+        if (Flag == 0):
+            firstDate = matchInfo.Date
+            Flag = 1
 
-# average away team win rate [necessary？]
-def getAWR(data):
-    pass
+        week = (matchInfo.Date - firstDate).days // 7 +1
+        
+        MW.append(week) 
 
-# 计算每个队周累计净胜球数量（goal_diff)
-def getGoalsDiff(data):
-    teams = {}
-    HTGD = []
-    ATGD = []
+    data.loc[:,'MW'] = pd.Series(MW).values
 
-    for i in data.groupby('HomeTeam').mean().T.columns:
-        teams[i] = []
-
-    # 对于每一场比赛
-    for i in range(len(playing_stat)):
-        HTGS = data.iloc[i]['FTHG']
-        ATGS = data.iloc[i]['FTAG']
-
-        try:
-            ht = teams[data.iloc[i].HomeTeam].pop()
-            at = teams[data.iloc[i].AwayTeam].pop()
-        except:
-            ht = 0
-            at = 0
-
-        HTGD.append(ht)
-        ATGD.append(at)
-        ht = ht + HTGS-ATGS
-        teams[data.iloc[i].HomeTeam].append(ht)
-        at = at + ATGS-HTGS
-        teams[data.iloc[i].AwayTeam].append(at)
-
-    data.loc[:,'HTGD'] = HTGD
-    data.loc[:,'ATGD'] = ATGD
     return data
 
-# 统计每支队伍最近三场比赛的表现
-def getPerformanceOfLast3Matches(data):
-    teams = {}
-    for i in data.groupby('HomeTeam').mean().T.columns:
-        teams[i] = deque(['UnKnown', 'UnKnown', 'UnKnown'])
+'''
+使用方法1: 赛季分开成12张分表，则
+    unifyDateformat(data)
+    separate(data)
+然后
+for key in data.keys():
+    print("\n" +"="*40)
+    print(key)
+    print("-"*40)
+    #print(data[key])
+    print(getMW(data[key], key))
 
-    HM1 = []
-    AM1 = []
-    HM2 = []
+使用方法2: 不分赛季，使用完整的表，则
+    unifyDateFormat(data)
+然后
+print(getMW(data, 2008))
+'''
+
+#*******************************
+# calculate the delta time from last match for home team and away team  [done]
+def getDeltaTime(data):
+    
+    teams = {}
+
+    HDT = []
+    ADT = []
+
+    for i in range(len(data)):
+        if (i % 380 == 0):
+            for name in data.groupby('HomeTeam').mean().T.columns:
+                teams[name] = []    # to store last match date
+
+        currentDate = data.iloc[i].Date
+
+        try:
+            homeLastMatchDate = teams[data.iloc[i].HomeTeam].pop()
+            awayLastMatchDate = teams[data.iloc[i].AwayTeam].pop()
+        except:
+            homeLastMatchDate = currentDate
+            awayLastMatchDate = currentDate
+
+        hdt = currentDate - homeLastMatchDate
+        adt = currentDate - awayLastMatchDate
+
+        HDT.append(hdt.days)
+        ADT.append(adt.days)
+
+        teams[data.iloc[i].HomeTeam].append(currentDate)
+        teams[data.iloc[i].AwayTeam].append(currentDate)
+
+    data.loc[:,'HDT'] = HDT
+    data.loc[:,'ADT'] = ADT
+
+    return data
+
+#unifyDateFormat(training_data)
+#getMW(training_data,2008)
+#getDeltaTime(training_data)
+#training_data.loc[377:400,["Date","HomeTeam","AwayTeam","MW","HDT","ADT"]]
+
+#*****************************
+# calculate the cumulative goal difference (before this match) scored by home team and away team    [done]
+def getCumulativeGoalsDiff(data):
+    teams = {}
+    HCGD = [] 
+    ACGD = []   
+
+    for name in data.groupby('HomeTeam').mean().T.columns:
+        teams[name] = []
+
+    # for each match
+    for i in range(len(data)):
+        FTHG = data.iloc[i]['FTHG']
+        FTAG = data.iloc[i]['FTAG']
+
+        try:
+            cgd_h = teams[data.iloc[i].HomeTeam].pop()
+            cgd_a = teams[data.iloc[i].AwayTeam].pop()
+        except:
+            cgd_h = 0
+            cgd_a = 0
+
+        HCGD.append(cgd_h)
+        ACGD.append(cgd_a)
+        cgd_h = cgd_h + FTHG - FTAG
+        teams[data.iloc[i].HomeTeam].append(cgd_h)
+        cgd_a = cgd_a + FTAG - FTHG
+        teams[data.iloc[i].AwayTeam].append(cgd_a)
+
+    data.loc[:,'HCGD'] = HCGD
+    data.loc[:,'ACGD'] = ACGD
+    return data
+
+#getCumulativeGoalsDiff(training_data)
+#training_data
+
+#****************************
+# !!!【 写report时在代码块外提一句: 因为在最开始用separateData()已发现，每年比赛数都是固定的380场，所以循环里可直接用i%380==0来初始化】
+# 统计每支队伍最近三场比赛的表现    [done]
+def getPerformanceOfLast3Matches(data):
+    HM1 = []    # result of the last match of home team
+    AM1 = []    # result of the last match of away team
+
+    HM2 = []    # result of the 2nd last match of home team
     AM2 = []
-    HM3 = []
+
+    HM3 = []    # result of the 3rd last match of home team
     AM3 = []
 
-    for i in range(len(playing_stat)):
+    teams = {}
+
+    for i in range(len(data)):
+        
+        if (i % 380 == 0):
+            for name in data.groupby('HomeTeam').mean().T.columns:
+                teams[name] = deque([None, None, None])  #[3rd, 2nd, latest data]
+
         HM3.append(teams[data.iloc[i].HomeTeam].popleft())
-        HM2.append(teams[data.iloc[i].HomeTeam][0])
-        HM1.append(teams[data.iloc[i].HomeTeam][1])
         AM3.append(teams[data.iloc[i].AwayTeam].popleft())
+        HM2.append(teams[data.iloc[i].HomeTeam][0])
         AM2.append(teams[data.iloc[i].AwayTeam][0])
+        HM1.append(teams[data.iloc[i].HomeTeam][1])
         AM1.append(teams[data.iloc[i].AwayTeam][1])
 
-        if playing_stat.iloc[i].FTR == 'H':
+        if data.iloc[i].FTR == 'H':
             # 主场 赢，则主场记为赢，客场记为输
             teams[data.iloc[i].HomeTeam].append('W')
             teams[data.iloc[i].AwayTeam].append('L')
-        elif playing_stat.iloc[i].FTR == 'A':
+        elif data.iloc[i].FTR == 'A':
             # 客场 赢，则主场记为输，客场记为赢
             teams[data.iloc[i].AwayTeam].append('W')
             teams[data.iloc[i].HomeTeam].append('L')
@@ -170,19 +313,32 @@ def getPerformanceOfLast3Matches(data):
 
     return data
 
+#getPerformanceOfLast3Matches(training_data)
+#print(training_data)
 
-# --------------- Data Exploration -----------------
+# --------------- 删除中间数据 -----------------
+# !!!【在notebook中不写成函数，直接写里面的代码】
+def removeIntermediateData(data):   # or removeUnwantedData(data)
+    data = data[data.MW > 3]
+    
+    print(data.isnull().sum())
+    # if there are empty values
+    # data.dropna(axis=0, how='any')
+
+    return data
+
+# --------------- Second Data Exploration -----------------
 
 # data visualization
 def plotGraph(data):
     pass
 
-# after viewing the result of the visualization, 去掉与结果过于相关的数据
-# 在notebook中不写成函数，直接写里面的代码
+# after viewing the result of the visualization, remove the attributes that is too related to the result
+# !!!【在notebook中不写成函数，直接写里面的代码】
 def selectFeatures(data):
     pass
 
-# -------------------- Model (by Yanke)-------------------------
+# -------------------- Model (by Yanke)------------------------- 
 '''
 - haven't re-organized
 - only involves a single model, logistic regression.
@@ -215,9 +371,9 @@ def referee_to_num(string):
 def team_to_num(string):
     if string in result:
         return result[string]
-training_data.HomeTeam = training_data.HomeTeam.apply(team_to_num)
-training_data.AwayTeam = training_data.AwayTeam.apply(team_to_num)
-training_data.Referee = training_data.Referee.apply(referee_to_num)
+training_data.HomeTeam = training_data.HomeTeam.apply(team_to_num)   
+training_data.AwayTeam = training_data.AwayTeam.apply(team_to_num) 
+training_data.Referee = training_data.Referee.apply(referee_to_num) 
 
 def clean_dataset(df):
     assert isinstance(df, pd.DataFrame), "df needs to be a pd.DataFrame"
@@ -227,7 +383,7 @@ def clean_dataset(df):
 clean_dataset(training_data)
 
 X_all = training_data.drop(['FTR'],1).drop(['FTHG'],1).drop(['FTAG'],1)
-y_all = training_data['FTR']
+y_all = training_data['FTR'] 
 
 
 X_train, X_test, y_train, y_test = train_test_split(X_all, y_all,test_size = 0.3,random_state = 2,stratify = y_all)
@@ -253,6 +409,6 @@ y_lr_prob = lr.predict_proba(X_test)[:, -1]  # probability estimates of the posi
 # create a dictionary variable with keys being algorithm names and values being classification accuracy
 
 accuracy = accuracy_score(y_test, y_lr)
-
+    
 
 print(accuracy)
