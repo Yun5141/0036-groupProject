@@ -40,15 +40,27 @@ url = "https://raw.githubusercontent.com/Yun5141/comp0036/master/stadiums-with-G
 geometricData = pd.read_csv(url)
 
 
-# ------------------ Data Pre-Processing -------------------
+# ------------------ helper functions -------------------
+# ********************************************
+# to remove data that contains None, NaN, infinite or overflowed
+def helper_removeInvalidData(data):
 
-# cleaning data (去掉不要的)    [not sure]
-def dataCleaning(raw_data):
-  raw_data.drop('Referee', axis = 1, inplace = True)
+    # remove data which contains None
+    data.dropna(axis=0, how='any',inplace=True)
+
+    # remove data which contains NaN, infinite or overflowed number 
+    indices_to_keep = ~data.isin([np.nan, np.inf, -np.inf]).any(1)
+    data = data[indices_to_keep]
+
+    return data
+
+# !!! 【report中: 第一步先检查有无空值】
+assert training_data.shape[0] == helper_removeInvalidData(training_data).shape[0]
+#result: there is no empty value at the initial stage 
 
 # ********************************************
 # unify the different date formats and convert the type from str to timestamp   [done]
-def unifyDateFormat(data):
+def helper_unifyDate(data):
 
     if not isinstance(data.Date[0],str):
         return
@@ -62,15 +74,9 @@ def unifyDateFormat(data):
     
     data['Date'] = pd.Series(newDate).values
 
-unifyDateFormat(training_data)
+#helper_unifyDate(training_data)
 
-# ------------------ Inital Data Exploration -------------------
-# ********************************************
-# !!! 【report中: 第一步先检查有无空值】
-# will print out the number of null value in each column
-training_data.isnull().sum()
-#result: there is no empty value at the initial stage     
-
+# ------------------ Inital Data Exploration -------------------  
 # ********************************************
 # to see the number of matches each year / season
 def separateData(data):
@@ -81,13 +87,14 @@ def separateData(data):
 
     return dataframe_collection
 
+'''
 data = separateData(training_data)
 for key in data.keys():
     print("\n" +"="*40)
     print(key)
     print("-"*40)
     print(data[key])
-
+'''
 #result: 380 rows * 11 dataframes + 170 rows * 1 dataframes = 4350 rows
 
 # ********************************************
@@ -96,26 +103,18 @@ def checkAverageWinRate(data, resultWinner):
 
     if resultWinner not in ['H', 'A', 'D']:
         raise Exception('The second argument should only take values within [“H”,“A”,“D”]')
+    
+    n_wins = len(data[data.FTR == resultWinner])
 
-    predictions = 0
-    for _, matchInfo in data.iterrows():
-        
-        if matchInfo['FTR'] == resultWinner:
-          predictions += 1
-
-    return predictions / len(data)
+    return n_wins / data.shape[0]
 
 #prediction = checkAverageWinRate(training_data, 'H')
 
 #results of raw data (ie, when nothing applied to the training data): 
+#total number of matches = 4350
 #home team = 0.4606896551724138 ~ 0.461; 
 #away team = 0.2910344827586207 ~ 0.291;
 #draw = 0.2482758620689655 ～ 0.248
-
-#results of processed data:
-#home team = ; 
-#away team = ;
-#draw = 
 
 # ------------------- Feature Construction ------------------——————————
 #*******************************
@@ -137,6 +136,8 @@ def getDistance(training_data, geometricData):
 
   DIS = pd.Series(array)
   training_data.loc[:,'DIS'] = DIS.values
+
+  return training_data
 
 #getDistance(training_data, geometricData) 
 #print(training_data)
@@ -234,11 +235,13 @@ def getCumulativeGoalsDiff(data):
     HCGD = [] 
     ACGD = []   
 
-    for name in data.groupby('HomeTeam').mean().T.columns:
-        teams[name] = []
-
     # for each match
     for i in range(len(data)):
+        
+        if (i % 380 == 0):
+            for name in data.groupby('HomeTeam').mean().T.columns:
+                teams[name] = []
+
         FTHG = data.iloc[i]['FTHG']
         FTAG = data.iloc[i]['FTAG']
 
@@ -262,6 +265,21 @@ def getCumulativeGoalsDiff(data):
 
 #getCumulativeGoalsDiff(training_data)
 #training_data
+
+#****************************
+# get average goal difference per week
+def getAverageGD(data):
+
+    data.eval('HAGD = HCGD / MW', inplace=True)
+    data.eval('AAGD = ACGD / MW', inplace=True)
+
+    return data
+
+# !!!【必须有了CGD与MW之后再写这一个；在第二次explore画图时舍弃CGD，AGD其中一个】
+# unifyDateFormat(training_data)
+# getMW(training_data,2008)
+# getCumulativeGoalsDiff(training_data)
+# getAverageGD(training_data)
 
 #****************************
 # !!!【 写report时在代码块外提一句: 因为在最开始用separateData()已发现，每年比赛数都是固定的380场，所以循环里可直接用i%380==0来初始化】
@@ -321,22 +339,151 @@ def getPerformanceOfLast3Matches(data):
 def removeIntermediateData(data):   # or removeUnwantedData(data)
     data = data[data.MW > 3]
     
-    print(data.isnull().sum())
-    # if there are empty values
-    # data.dropna(axis=0, how='any')
+    data = helper_removeInvalidData(data)
 
     return data
 
-# --------------- Second Data Exploration -----------------
+# data.drop(['Date','HomeTeam', 'AwayTeam', 'Referee','FTHG', 'FTAG', 'MW'],1, inplace=True)
 
-# data visualization
-def plotGraph(data):
-    pass
+# (--------------- Progress Summary -----------------)
+'''
+getDistance(training_data,geometricData)
 
-# after viewing the result of the visualization, remove the attributes that is too related to the result
-# !!!【在notebook中不写成函数，直接写里面的代码】
-def selectFeatures(data):
-    pass
+unifyDateFormat(training_data)
+getMW(training_data,2008)
+getDeltaTime(training_data)
+getCumulativeGoalsDiff(training_data)
+getAverageGD(training_data)
+getPerformanceOfLast3Matches(training_data)
+
+training_data = removeIntermediateData(training_data)
+'''
+
+# !!!【不必写成函数；重点是给一个总结，并且说明feature是28个，因为FTR是标签不是feature】
+def printOutSummary(data):
+    n_matches = data.shape[0]
+    n_features = data.shape[1] - 1  # FTR is a label, not feature
+
+    print("total number of matches: {}".format(n_matches))
+    print("number of features: {}".format(n_features)) 
+    print("home team win rate: {}".format(checkAverageWinRate(training_data,'H')))
+    # print ("away team xxxxxxxx")
+    # print ("draw xxxxxxxx")
+
+#results of processed data:
+#total number of matches = 3981
+#number of features = 28  
+#home team = 0.4654609394624466 ~ 0.4655; 
+#away team = 0.2868625973373524 ~ 0.2869;
+#draw = 0.24767646320020095 ~ 0.2477
+
+# !!!【 in report: From these results, we can find that the processed data is still imbalanced. We chose to make it binary.】
+
+# --------------- Data Transformation -----------------
+# ********************************
+data = training_data.copy()
+data.drop(['Date','HomeTeam', 'AwayTeam', 'Referee','FTHG', 'FTAG', 'MW'],1, inplace=True)
+
+# ********************************
+# simplify to a binary problem, make the target be FTR == 'H'
+def simplifyLabel(label):
+    if label == 'H':
+        return 'H'
+    else:
+        return 'NH'
+
+#data['FTR'] = data.FTR.apply(simplifyLabel)
+#data['HTR'] = data.HTR.apply(simplifyLabel)
+
+# ********************************
+# separate the training data into : feature set, label
+X_all = data.drop(['FTR'],1)
+Y_all = data['FTR']
+
+# separate the columns by types: 
+categList = ["HTR", "HM1","AM1", "HM2","AM2", "HM3","AM3"]
+numList = list(set(X_all.columns.tolist()).difference(set(categList)))
+
+
+# ********************************
+# rescale data
+def rescale(data, cols):
+    for col in cols:
+        max = data[col].max()
+        min = data[col].min()
+        data[col] = (data[col] - min) / (max - min)
+    return data
+
+#rescale(X_all,numList)   [not sure if needed to be the whole numList]
+
+# ********************************
+# standardization
+from sklearn.preprocessing import scale
+def standardize(data,cols):
+    for col in cols:
+        data[col] = scale(data[col])
+
+#standardize(X_all, numList)
+
+# ********************************
+# transform categorical features
+def transformCategoricalFeature(data,categoricalFeatureNames):
+    # 把这些特征转换成字符串类型
+    for col in categoricalFeatureNames:
+        data[col] = data[col].astype('str')
+    
+    output = pd.DataFrame(index=data.index)
+
+    for col_name, col_data in data.iteritems():
+        if col_data.dtype == 'object':
+            col_data = pd.get_dummies(col_data, prefix = col_name)
+        output = output.join(col_data)
+    
+    return output
+
+#X_all = transformCategoricalFeature(X_all, categList)
+
+
+# --------------- Visualization -----------------
+import matplotlib.pyplot as plt
+import seaborn as sns
+# ************************************
+# plot all the features with Pearson correlation heatmap
+def plotGraph(X_all, Y_all):
+
+    Y_all=Y_all.map({'NH':0,'H':1})
+
+    train_data=pd.concat([X_all,Y_all],axis=1)
+
+    colormap = plt.cm.RdBu
+    plt.figure(figsize=(21,18))
+    plt.title('Pearson Correlation of Features', y=1.05, size=15)
+    sns.heatmap(train_data.astype(float).corr(),linewidths=0.1,vmax=1.0,
+                square=True, cmap=colormap, linecolor='white', annot=True)
+
+# plotGraph(X_all, Y_all)
+# !!!【in report: found that HAGD & HCGD, AAGD & ACGD are highly correlated, so drop HCGD, ACGD】
+# X_all = X_all.drop(["HCGD","ACGD"], axis=1)
+# *************************************
+# plot the top 10 features related to FTR
+def plotGraph2(X_all, Y_all):
+    Y_all=Y_all.map({'NH':0,'H':1})
+
+    train_data=pd.concat([X_all,Y_all],axis=1)
+
+    #FTR correlation matrix
+    plt.figure(figsize=(14,12))
+    k = 10 # number of variables for heatmap
+    cols = abs(train_data.astype(float).corr()).nlargest(k, 'FTR')['FTR'].index
+    cm = np.corrcoef(train_data[cols].values.T)
+    sns.set(font_scale=1.25)
+    hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols.values, xticklabels=cols.values)
+    plt.show()
+
+
+#plotGraph2(X_all, Y_all)
+# !!! 【in report: give a few comment of this graph】
+
 
 # -------------------- Model (by Yanke)------------------------- 
 '''
@@ -344,71 +491,3 @@ def selectFeatures(data):
 - only involves a single model, logistic regression.
 - Yanke is now working on model combination (as suggested in the marking guidelines)
 '''
-# ---------------
-# training_data2 = pd.read_csv('/content/training_data_with_distance.csv')
-# a = []
-# for i in np.arange(20, 73, 1).tolist():
-#   a.append(i)
-
-# training_data = training_data.drop(training_data.columns[a], axis = 1)
-training_data = training_data.drop(['Date'],1)
-def only_hw(string):
-    if string == 'H':
-        return 1
-    if string == 'A':
-        return 0
-    else:
-        return 2
-
-training_data.FTR = training_data.FTR.apply(only_hw)
-training_data.HTR = training_data.HTR.apply(only_hw)
-referee = dict(zip(list(dict.fromkeys(training_data.Referee)), np.arange(0, len(dict.fromkeys(training_data.Referee)), 1).tolist()))
-result = dict(zip(list(dict.fromkeys(training_data.HomeTeam)), np.arange(0, 36, 1).tolist()))
-
-def referee_to_num(string):
-    if string in referee:
-        return referee[string]
-def team_to_num(string):
-    if string in result:
-        return result[string]
-training_data.HomeTeam = training_data.HomeTeam.apply(team_to_num)   
-training_data.AwayTeam = training_data.AwayTeam.apply(team_to_num) 
-training_data.Referee = training_data.Referee.apply(referee_to_num) 
-
-def clean_dataset(df):
-    assert isinstance(df, pd.DataFrame), "df needs to be a pd.DataFrame"
-    df.dropna(inplace=True)
-    indices_to_keep = ~df.isin([np.nan, np.inf, -np.inf]).any(1)
-    return df[indices_to_keep].astype(np.float64)
-clean_dataset(training_data)
-
-X_all = training_data.drop(['FTR'],1).drop(['FTHG'],1).drop(['FTAG'],1)
-y_all = training_data['FTR'] 
-
-
-X_train, X_test, y_train, y_test = train_test_split(X_all, y_all,test_size = 0.3,random_state = 2,stratify = y_all)
-X_train2, X_test2, y_train2, y_test2 = train_test_split(X_all, y_all,test_size = 0.1,random_state = 2,stratify = y_all)
-
-print(X_train, X_test)
-
-# ------- plot ------------
-corr = X_all.corr()
-
-from seaborn import heatmap
-heatmap(corr)
-
-plt.show()
-
-# -------- regression ---------
-lr = LogisticRegression()
-lr.fit(X_train, y_train)
-y_lr = lr.predict(X_test)
-y_lr_prob = lr.predict_proba(X_test)[:, -1]  # probability estimates of the positive class
-
-
-# create a dictionary variable with keys being algorithm names and values being classification accuracy
-
-accuracy = accuracy_score(y_test, y_lr)
-    
-
-print(accuracy)
