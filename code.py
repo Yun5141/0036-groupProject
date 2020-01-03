@@ -11,12 +11,6 @@ from sklearn import model_selection
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-# may need to import sklearn.lda.LDA and sklearn.qda.QDA instead
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
-
 from sklearn.metrics import accuracy_score, roc_curve, precision_recall_curve
 
 import io
@@ -464,6 +458,7 @@ def plotGraph(X_all, Y_all):
 # plotGraph(X_all, Y_all)
 # !!!【in report: found that HAGD & HCGD, AAGD & ACGD are highly correlated, so drop HCGD, ACGD】
 # X_all = X_all.drop(["HCGD","ACGD"], axis=1)
+
 # *************************************
 # plot the top 10 features related to FTR
 def plotGraph2(X_all, Y_all):
@@ -480,14 +475,157 @@ def plotGraph2(X_all, Y_all):
     hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols.values, xticklabels=cols.values)
     plt.show()
 
-
 #plotGraph2(X_all, Y_all)
 # !!! 【in report: give a few comment of this graph】
 
+# X_all = X_all["A", "B", "C", xxxx] 
+# select the top 10 features according to the graph2, drop others
 
-# -------------------- Model (by Yanke)------------------------- 
+# -------------------- Classifiers ------------------------- 
 '''
-- haven't re-organized
-- only involves a single model, logistic regression.
-- Yanke is now working on model combination (as suggested in the marking guidelines)
+from sklearn.naive_bayes import GaussianNB
+clf1 = GaussianNB()
+
+from sklearn.linear_model import LogisticRegression
+clf2 = LogisticRegression(solver='lbfgs', multi_class = 'multinomial')
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+clf3 = LDA()
+
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
+clf4 = QDA()
+
+from sklearn.tree import DecisionTreeClassifier
+clf5 = DecisionTreeClassifier()
+
+from sklearn.neural_network import MLPClassifier
+clf6 = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random_state=1)
+
+clfs = [clf1, clf2, clf3, clf4, clf5, clf6]
 '''
+
+# -------------------- Evaluation ------------------------- 
+# ********************************
+from time import time
+from sklearn.metrics import f1_score
+# train classifier
+def train_classifier(clf, X_train, y_train):
+    start = time()
+    clf.fit(X_train, y_train)
+    end = time()
+    print("time for training: {:.4f} sec".format(end - start))
+
+# predict using the classifier
+def predict_labels(clf, features, target):
+    start = time()
+    y_pred = clf.predict(features)
+    end = time()
+    print("time for prediction: {:.4f} sec".format(end - start))
+    return f1_score(target, y_pred, pos_label=1), sum(target == y_pred) / float(len(y_pred))
+
+# print out the performance of each classifer
+def train_predict(clf, X_train, y_train, X_test, y_test):
+
+    print("Classifier: {} [sample size: {}]".format(clf.__class__.__name__, len(X_train)))
+
+    train_classifier(clf, X_train, y_train)
+
+    # evaluate model on train set
+    print("[on train set]")
+    f1, acc = predict_labels(clf, X_train, y_train)
+    print("F1 score: {:.4f} ".format(f1))
+    print("accuracy: {:.4f}".format(acc))
+
+    # evaluate model on test set
+    print("[on test set]")
+    f1, acc = predict_labels(clf, X_test, y_test)
+    print("F1 score: {:.4f} ".format(f1))
+    print("accuracy: {:.4f}".format(acc))
+
+'''
+for clf in clfs:
+    train_predict(clf, X_train, y_train, X_test, y_test)
+    print("\n")
+'''
+# [in report: xxx takes the shortest time for training; xxx has the highest accuracy; xxx [give comments to the result]]
+# [in report: so we choose to adjust xxxx (the relatively best one among them) with hyperparameters]
+
+# ********************************
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import make_scorer
+# adjust the model with hyperparameter      【如果只一个model的话可以不用写成函数】
+def adjustClassifier(clf, f1_scorer, param, X_train, y_train):
+
+    grid_obj = GridSearchCV(clf,scoring=f1_scorer,param_grid=parameters,cv=5)
+    grid_obj = grid_obj.fit(X_train,y_train)
+
+    clf = grid_obj.best_estimator_
+
+    return clf
+
+# clf = LogisticRegression(xxxxx)
+# f1_scorer = make_scorer(xxxxxxxxx)
+# parameters = {xxxxx}
+# clf = adjustClassifier(clf, f1_scorer, parameters, X_train, y_train)
+
+'''
+Parameter Settings Plans of Each Classifier:
+# Logistic Regression
+clf = LogisticRegression(solver = 'lbfgs', multi_class = 'multinomial')
+f1_scorer = make_scorer(f1_score, average = 'weighted')
+parameters = { 
+              'C' :[1.0, 100.0, 1000.0],
+              'max_iter':[100,200,300, 400, 500],
+              'intercept_scaling':[0.1, 0.5, 1.0]
+             }
+
+# GaussianNB
+clf = GaussianNB()
+f1_scorer = make_scorer(f1_score, average = 'weighted')
+parameters = { 
+              'var_smoothing': [1e-09, 1e-07, 1e-05, 1e-11, 1e-13]
+             }
+
+#LDA
+clf = LDA()
+f1_scorer = make_scorer(f1_score, average = 'weighted')
+parameters = { 
+              'solver': ['svd', 'lsqr', 'eigen'],
+              'tol': [ 0.001, 0.0001, 0.00001]
+             }
+
+#QDA
+clf = QDA()
+f1_scorer = make_scorer(f1_score, average = 'weighted')
+parameters = { 
+              'reg_param': [0, 0.1, 0.01, 0.001],
+              'tol': [0.001, 0.0001, 0.00001]
+             }
+
+#Decision Tree
+clf = DecisionTreeClassifier()
+f1_scorer = make_scorer(f1_score, average = 'weighted')
+parameters = { 
+              'solver': ['svd', 'lsqr', 'eigen'],
+              'tol': [0.01, 0.001, 0.0001, 0.00001]
+             }
+
+#Neural Network
+clf = MLPClassifier(solver='lbfgs', alpha=1e-5
+                    , random_state=1)
+f1_scorer = make_scorer(f1_score, average = 'weighted')
+parameters = { 
+              'alpha': [ 1e-03, 1e-05, 1e-07],
+              'hidden_layer_sizes':[ (5,), (10,), (15,)],
+              'learning_rate_init':[0.01, 0.001, 0.0001],
+             }
+
+'''
+
+# -------------------- Results ------------------------- 
+
+# 通过前面的方法预测出来的概率最高的类别即判断结果  [not sure]
+def labelClassifier(H_rate, A_rate, D_rate):
+    pass
+
+# -------------------- Final Prediction ------------------------- 
