@@ -549,6 +549,7 @@ for clf in clfs:
 '''
 # [in report: xxx takes the shortest time for training; xxx has the highest accuracy; xxx [give comments to the result]]
 # [in report: so we choose to adjust xxxx (the relatively best one among them) with hyperparameters]
+# 【如果用ensemble method可行的话，就灵活调整这边的内容和顺序】
 
 # ********************************
 from sklearn.model_selection import GridSearchCV
@@ -621,6 +622,55 @@ parameters = {
              }
 
 '''
+
+# **************************
+# ensemble learning     【to choose the best model?】    
+
+from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import VotingClassifier
+from sklearn.metrics import f1_score
+from sklearn.metrics import accuracy_score, roc_curve, precision_recall_curve
+
+#Random forrest
+kfold_rf = model_selection.KFold(n_splits=10, random_state=10)
+model_rf = RandomForestClassifier(n_estimators=100, max_features=5)
+results_rf = model_selection.cross_val_score(model_rf, X_train, y_train, cv=kfold_rf)
+print(results_rf.mean())
+# 0.76776514272453
+
+#adaBoost
+from sklearn.ensemble import AdaBoostClassifier
+kfold_ada = model_selection.KFold(n_splits=10, random_state=10)
+model_ada = AdaBoostClassifier(n_estimators=30, random_state=10)
+results_ada = model_selection.cross_val_score(model_ada,X_train, y_train, cv=kfold_ada)
+print(results_ada.mean())
+# 0.7742270699569377
+
+#Gradient Boost
+from sklearn.ensemble import GradientBoostingClassifier
+kfold_sgb = model_selection.KFold(n_splits=10, random_state=10)
+model_sgb = GradientBoostingClassifier(n_estimators=100, random_state=10)
+results_sgb = model_selection.cross_val_score(model_sgb, X_train, y_train, cv=kfold_sgb)
+print(results_sgb.mean())
+# 0.7727959567829606
+
+#voting estimator
+kfold_vc = model_selection.KFold(n_splits=10, random_state=10)
+ 
+estimators = []
+mod_lr = GaussianNB()
+estimators.append(('Gaussian', mod_lr))
+mod_dt = DecisionTreeClassifier()
+estimators.append(('cart', mod_dt))
+mod_sv = SVC(gamma = 'scale')
+estimators.append(('LDA', mod_sv))
+ensemble = VotingClassifier(estimators, voting = 'hard', weights=[1,1,1])
+
+results_vc = model_selection.cross_val_score(ensemble, X_train, y_train ,cv=kfold_vc)
+
+print(results_vc.mean())
+# 0.7745867821871535
 
 # -------------------- Results ------------------------- 
 
