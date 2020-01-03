@@ -37,7 +37,7 @@ geometricData = pd.read_csv(url)
 # ------------------ helper functions -------------------
 # ********************************************
 # to remove data that contains None, NaN, infinite or overflowed
-def helper_removeInvalidData(data):
+def removeInvalidData(data):
 
     # remove data which contains None
     data.dropna(axis=0, how='any',inplace=True)
@@ -49,12 +49,12 @@ def helper_removeInvalidData(data):
     return data
 
 # !!! 【report中: 第一步先检查有无空值】
-assert training_data.shape[0] == helper_removeInvalidData(training_data).shape[0]
+assert training_data.shape[0] == removeInvalidData(training_data).shape[0]
 #result: there is no empty value at the initial stage 
 
 # ********************************************
 # unify the different date formats and convert the type from str to timestamp   [done]
-def helper_unifyDate(data):
+def unifyDate(data):
 
     if not isinstance(data.Date[0],str):
         return
@@ -68,7 +68,7 @@ def helper_unifyDate(data):
     
     data['Date'] = pd.Series(newDate).values
 
-#helper_unifyDate(training_data)
+#unifyDate(training_data)
 
 # ------------------ Inital Data Exploration -------------------  
 # ********************************************
@@ -346,7 +346,7 @@ getPerformanceOfLast3Matches(training_data)
 def removeIntermediateData(data):   # or removeUnwantedData(data)
     data = data[data.MW > 3]
     
-    data = helper_removeInvalidData(data)
+    data = removeInvalidData(data)
 
     return data
 
