@@ -328,18 +328,7 @@ def getPerformanceOfLast3Matches(data):
 #getPerformanceOfLast3Matches(training_data)
 #print(training_data)
 
-# --------------- 删除中间数据 -----------------
-# !!!【在notebook中不写成函数，直接写里面的代码】
-def removeIntermediateData(data):   # or removeUnwantedData(data)
-    data = data[data.MW > 3]
-    
-    data = helper_removeInvalidData(data)
-
-    return data
-
-# data.drop(['Date','HomeTeam', 'AwayTeam', 'Referee','FTHG', 'FTAG', 'MW'],1, inplace=True)
-
-# (--------------- Progress Summary -----------------)
+# -------create features---------
 '''
 getDistance(training_data,geometricData)
 
@@ -350,9 +339,20 @@ getCumulativeGoalsDiff(training_data)
 getAverageGD(training_data)
 getPerformanceOfLast3Matches(training_data)
 
-training_data = removeIntermediateData(training_data)
 '''
 
+# --------------- 删除中间数据 -----------------
+# !!!【在notebook中不写成函数，直接写里面的代码】
+def removeIntermediateData(data):   # or removeUnwantedData(data)
+    data = data[data.MW > 3]
+    
+    data = helper_removeInvalidData(data)
+
+    return data
+
+# training_data = removeIntermediateData(training_data)
+
+# (--------------- Progress Summary -----------------)
 # !!!【不必写成函数；重点是给一个总结，并且说明feature是28个，因为FTR是标签不是feature】
 def printOutSummary(data):
     n_matches = data.shape[0]
@@ -375,8 +375,8 @@ def printOutSummary(data):
 
 # --------------- Data Transformation -----------------
 # ********************************
-data = training_data.copy()
-data.drop(['Date','HomeTeam', 'AwayTeam', 'Referee','FTHG', 'FTAG', 'MW'],1, inplace=True)
+#data = training_data.copy()
+#data.drop(['Date','HomeTeam', 'AwayTeam', 'Referee','FTHG', 'FTAG', 'MW'],1, inplace=True)
 
 # ********************************
 # simplify to a binary problem, make the target be FTR == 'H'
@@ -391,12 +391,12 @@ def simplifyLabel(label):
 
 # ********************************
 # separate the training data into : feature set, label
-X_all = data.drop(['FTR'],1)
-Y_all = data['FTR']
+#X_all = data.drop(['FTR'],1)
+#Y_all = data['FTR']
 
 # separate the columns by types: 
-categList = ["HTR", "HM1","AM1", "HM2","AM2", "HM3","AM3"]
-numList = list(set(X_all.columns.tolist()).difference(set(categList)))
+#categList = ["HTR", "HM1","AM1", "HM2","AM2", "HM3","AM3"]
+#numList = list(set(X_all.columns.tolist()).difference(set(categList)))
 
 
 # ********************************
@@ -557,7 +557,7 @@ from sklearn.metrics import make_scorer
 # adjust the model with hyperparameter      【如果只一个model的话可以不用写成函数】
 def adjustClassifier(clf, f1_scorer, param, X_train, y_train):
 
-    grid_obj = GridSearchCV(clf,scoring=f1_scorer,param_grid=parameters,cv=5)
+    grid_obj = GridSearchCV(clf,scoring=f1_scorer,param_grid=param,cv=5)
     grid_obj = grid_obj.fit(X_train,y_train)
 
     clf = grid_obj.best_estimator_
@@ -625,7 +625,7 @@ parameters = {
 
 # **************************
 # ensemble learning     【to choose the best model?】    
-
+'''
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
@@ -671,7 +671,7 @@ results_vc = model_selection.cross_val_score(ensemble, X_train, y_train ,cv=kfol
 
 print(results_vc.mean())
 # 0.7745867821871535
-
+'''
 # -------------------- Results ------------------------- 
 
 # 通过前面的方法预测出来的概率最高的类别即判断结果  [not sure]
