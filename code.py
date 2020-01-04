@@ -63,6 +63,8 @@ def unifyDate(data):
     for _, matchInfo in data.iterrows():
         if len(matchInfo.Date) == 8 :
             newDate.append( pd.to_datetime(matchInfo.Date, format="%d/%m/%y" ))
+        elif len(matchInfo.Date) == 9 :
+            newDate.append( pd.to_datetime(matchInfo.Date, format="%d %b %y" ))
         elif len(matchInfo.Date) == 10 :
             newDate.append(  pd.to_datetime(matchInfo.Date, format="%d/%m/%Y" ))
     
@@ -506,6 +508,10 @@ clfs = [clf1, clf2, clf3, clf4, clf5, clf6]
 
 # -------------------- Evaluation ------------------------- 
 # ********************************
+# split data
+#X_train, X_test, y_train, y_test = train_test_split(X_all, Y_all, test_size = 50,random_state = 2,stratify = Y_all)
+
+# ********************************
 from time import time
 from sklearn.metrics import f1_score
 # train classifier
@@ -672,6 +678,20 @@ results_vc = model_selection.cross_val_score(ensemble, X_train, y_train ,cv=kfol
 print(results_vc.mean())
 # 0.7745867821871535
 '''
+
+# ------------------- Derive Features of Test Sample -------------
+# ***********************
+# read test data
+#url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/epl-test.csv'
+#X_sample = pd.read_csv(url)
+
+# ************************
+# derive features:
+# unifyDate(X_sample)
+# getDistance(X_sample)
+# xxxxxx
+# xxxxxx
+
 # -------------------- Results ------------------------- 
 
 # 通过前面的方法预测出来的概率最高的类别即判断结果  [not sure]
