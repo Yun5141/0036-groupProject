@@ -396,6 +396,9 @@ def simplifyLabel(label):
 #X_all = data.drop(['FTR'],1)
 #Y_all = data['FTR']
 
+# map the label into 0, 1
+#Y_all = Y_all.map({'NH':0,'H':1})
+
 # separate the columns by types: 
 #categList = ["HTR", "HM1","AM1", "HM2","AM2", "HM3","AM3"]
 #numList = list(set(X_all.columns.tolist()).difference(set(categList)))
@@ -447,8 +450,6 @@ import seaborn as sns
 # plot all the features with Pearson correlation heatmap
 def plotGraph(X_all, Y_all):
 
-    Y_all=Y_all.map({'NH':0,'H':1})
-
     train_data=pd.concat([X_all,Y_all],axis=1)
 
     colormap = plt.cm.RdBu
@@ -464,7 +465,6 @@ def plotGraph(X_all, Y_all):
 # *************************************
 # plot the top 10 features related to FTR
 def plotGraph2(X_all, Y_all):
-    Y_all=Y_all.map({'NH':0,'H':1})
 
     train_data=pd.concat([X_all,Y_all],axis=1)
 
