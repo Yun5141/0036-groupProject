@@ -115,25 +115,25 @@ def checkAverageWinRate(data, resultWinner):
 # ------------------- Feature Construction ------------------——————————
 #*******************************
 # get the distance needed to travel for the away team   [done] 
-def getDistance(training_data, geometricData):
-
-  Teams = training_data.HomeTeam
-  geometricData = geometricData.loc[geometricData['Team'].isin(Teams)]
-
+def getDistance(data, geometricData):
   array = []
-  for x in training_data.iterrows():
+  for x in data.iterrows():
+   
     home_lat = (geometricData.loc[geometricData['Team'] == x[1].HomeTeam]).Latitude
     home_long = (geometricData.loc[geometricData['Team'] == x[1].HomeTeam]).Longitude
     home_location = (np.float32(home_lat), np.float32(home_long))
+    
     away_lat = (geometricData.loc[geometricData['Team'] == x[1].AwayTeam]).Latitude
+   
     away_long = (geometricData.loc[geometricData['Team'] == x[1].AwayTeam]).Longitude
     away_location = (np.float32(away_lat), np.float32(away_long))
-    array.append(great_circle(home_location, away_location).km)
-
+    array.append(np.float32(geodesic(home_location, away_location).km))
+  
+  
   DIS = pd.Series(array)
-  training_data.loc[:,'DIS'] = DIS.values
+  data.loc[:,'DIS'] = DIS
 
-  return training_data
+  return data
 
 #getDistance(training_data, geometricData) 
 #print(training_data)
