@@ -330,16 +330,15 @@ def getPerformanceOfLast3Matches(data):
 #getPerformanceOfLast3Matches(training_data)
 #print(training_data)
 
-# -------create features---------
+# ***** feature construction summary *****
 '''
-getDistance(training_data,geometricData)
-
 unifyDateFormat(training_data)
-getMW(training_data,2008)
-getDeltaTime(training_data)
-getCumulativeGoalsDiff(training_data)
-getAverageGD(training_data)
-getPerformanceOfLast3Matches(training_data)
+getDistance(training_data,geometricData) #DIS
+getMW(training_data,2008)   # MW
+getDeltaTime(training_data)  # HDT, ADT
+getCumulativeGoalsDiff(training_data)   # HCGD, ACGD
+getAverageGD(training_data)  # HAGD, AAGD
+getPerformanceOfLast3Matches(training_data)  # HM1, AM1, HM2, AM2, HM3, AM3
 
 '''
 
@@ -353,6 +352,7 @@ def removeIntermediateData(data):   # or removeUnwantedData(data)
     return data
 
 # training_data = removeIntermediateData(training_data)
+# or removeInvalideData(data)
 
 # (--------------- Progress Summary -----------------)
 # !!!【不必写成函数；重点是给一个总结，并且说明feature是28个，因为FTR是标签不是feature】
@@ -396,13 +396,14 @@ def simplifyLabel(label):
 #X_all = data.drop(['FTR'],1)
 #Y_all = data['FTR']
 
-# map the label into 0, 1
-#Y_all = Y_all.map({'NH':0,'H':1})
+# map the label into 0, 1, 2
+# rule = {'NH':0,'H':1}
+# Y_all = Y_all.map(rule)
+# X_all['HTR'] = X_all['HTR'].map(rule)
 
 # separate the columns by types: 
 #categList = ["HTR", "HM1","AM1", "HM2","AM2", "HM3","AM3"]
 #numList = list(set(X_all.columns.tolist()).difference(set(categList)))
-
 
 # ********************************
 # rescale data
@@ -442,6 +443,33 @@ def transformCategoricalFeature(data,categoricalFeatureNames):
 
 #X_all = transformCategoricalFeature(X_all, categList)
 
+# ***** data transformation summary *****
+'''
+data = training_data.copy()
+data.drop(['Date','HomeTeam', 'AwayTeam', 'Referee','FTHG', 'FTAG', 'MW'],1, inplace=True)
+
+# simplify to a binary problem, make the target be FTR == 'H'
+data['FTR'] = data.FTR.apply(simplifyLabel)
+data['HTR'] = data.HTR.apply(simplifyLabel)
+
+# separate the training data into : feature set, label
+X_all = data.drop(['FTR'],1)
+Y_all = data['FTR']
+
+# map the label into 0, 1
+Y_all = Y_all.map({'NH':0,'H':1})
+
+# separate the columns by types: 
+categList = ["HTR", "HM1","AM1", "HM2","AM2", "HM3","AM3"]
+numList = list(set(X_all.columns.tolist()).difference(set(categList)))
+
+# rescale & standardize
+rescale(X_all,numList)   #[not sure if needed to be the whole numList]
+standardize(X_all, numList)
+
+# transform categorical features
+X_all = transformCategoricalFeature(X_all, categList)
+'''
 
 # --------------- Visualization -----------------
 import matplotlib.pyplot as plt
@@ -484,6 +512,7 @@ def plotGraph2(X_all, Y_all):
 # select the top 10 features according to the graph2, drop others
 
 # -------------------- Classifiers ------------------------- 
+# !!![the following definition seems not compatible with multi-class classification]
 '''
 from sklearn.naive_bayes import GaussianNB
 clf1 = GaussianNB()
@@ -681,25 +710,65 @@ print(results_vc.mean())
 
 # ------------------- Derive Features of Test Sample -------------
 # ***********************
-# read test data
-#url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/epl-test.csv'
-#X_sample = pd.read_csv(url)
+# read data
+# url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/epl-test.csv'
+# rawData_toPred = pd.read_csv(url)
+# url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/2019EPL.csv'
+# rawData_2019_up-to-date = pd.read_csv(url)
+
+# **********************
+# verify that there is no invalid data in 2019 up-to-date data
+# assert rawData_2019_up-to-date == removeInvalidData(rawData_2019_up-to-date)
+
+# ************************
+# join the two dataframe together
+# data2019 = pd.concat([rawData_2019_up-to-date,rawData_toPred],ignore_index=True,sort=False)
+
+# ************************
+# select attributes to be used to create features
+# l = ["Date","HomeTeam","AwayTeam","FTHG","FTAG","FTR"]
+# data2019 = data2019[l]
 
 # ************************
 # derive features:
-# unifyDate(X_sample)
-# getDistance(X_sample)
-# xxxxxx
-# xxxxxx
+#unifyDate(data2019)
+#getDistance(data2019,geometricData) # HomeTeam,AwayTeam -> DIS
+#getMW(data2019,2019)    # Date -> MW
+#getDeltaTime(data2019)  # Date -> HDT, ADT
+#getCumulativeGoalsDiff(data2019)    # FTHG, FTAG -> HCGD, ACGD
+#getAverageGD(data2019)      # HCGD, ACGD, MW -> HAGD, AAGD
+#getPerformanceOfLast3Matches(data2019)  # FTR -> HM1, AM1, HM2, AM2, HM3, AM3
 
+# **************************
+# drop unwanted or intermediate data
+# data2019_selected = removeIntermediateData(data2019)
+
+# dropL = ["Date","HomeTeam","AwayTeam","FTHG","FTAG","FTR"]
+# data2019_selected = data2019_selected.drop(dropL,axis=1,inplace=True)
+
+# ***************************
+# data transformation (less steps than handling training data)
+#rescale(data2019_selected,numList)
+#standardize(data2019_selected, numList)
+
+#data2019_selected = transformCategoricalFeature(data2019_selected, categList)
+
+# ***************************
+# data_toPredict = data2019_selected.tail(10)
 # -------------------- Results ------------------------- 
-
+# train_classifier(clf,xtrain,y_train)     # train the classifer
+# sample1 = X_test.sample(n=1, random_state=1)
+# y_pred_sample1 = clf.predict(sample)
+# y_pred_sample1
 # 通过前面的方法预测出来的概率最高的类别即判断结果  [not sure]
 def labelClassifier(H_rate, A_rate, D_rate):
     pass
 
 # -------------------- Final Prediction ------------------------- 
+# after separte 'Home Win' and "Home Lose (ie Away Win or Draw)", need to run once again to classify "Away Wins or Draw"
+# which the process shall be presented in this section I think
+
 #train_classifier(clf1,X_train,y_train)     # train the classifer
-#sample1 = X_test.sample(n=1, random_state=1)
-#y_pred = clf1.predict(sample1)
+#sample = data2019_selected.tail(10)
+#y_pred = clf1.predict(sample)
 #y_pred  # 1 means home team wins; 0 means away team wins or draw
