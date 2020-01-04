@@ -699,3 +699,7 @@ def labelClassifier(H_rate, A_rate, D_rate):
     pass
 
 # -------------------- Final Prediction ------------------------- 
+#train_classifier(clf1,X_train,y_train)     # train the classifer
+#sample1 = X_test.sample(n=1, random_state=1)
+#y_pred = clf1.predict(sample1)
+#y_pred  # 1 means home team wins; 0 means away team wins or draw
