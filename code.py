@@ -30,19 +30,19 @@ from collections import deque
 import pandas as pd 
 
 # import training data set
-url="https://raw.githubusercontent.com/Yun5141/comp0036/master/epl-training.csv"
+url="https://raw.githubusercontent.com/Yun5141/comp0036/master/data/epl-training.csv"
 raw_training_data=pd.read_csv(url)
 
 # import test set
-url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/epl-test.csv'
+url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/data/epl-test.csv'
 rawData_toPred = pd.read_csv(url)
 
 # import 2019 up-to-date data (from http://www.football-data.co.uk)
-url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/2019EPL.csv'
+url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/data/2019EPL.csv'
 rawData_2019_uptodate = pd.read_csv(url)
 
 # import geometric information of teams
-url = "https://raw.githubusercontent.com/Yun5141/comp0036/master/stadiums-with-GPS-coordinates.csv"
+url = "https://raw.githubusercontent.com/Yun5141/comp0036/master/data/stadiums-with-GPS-coordinates.csv"
 geometricData = pd.read_csv(url)
 
 
