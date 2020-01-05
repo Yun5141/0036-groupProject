@@ -395,7 +395,7 @@ def printOutSummary(data):
 #data.drop(['Date','HomeTeam', 'AwayTeam', 'Referee','FTHG', 'FTAG', 'MW'],1, inplace=True)
 
 # ********************************
-# simplify to a binary problem, make the target be FTR == 'H'
+# simplify to a binary problem, make the target be FTR == 'H'   
 def simplifyLabel(label):
     if label == 'H':
         return 'H'
@@ -410,7 +410,7 @@ def simplifyLabel(label):
 #X_all = data.drop(['FTR'],1)
 #Y_all = data['FTR']
 
-# map the label into 0, 1, 2
+# map the label into 0, 1, 2    #!!!【the mapping may be unnecessary】
 # rule = {'NH':0,'H':1}
 # Y_all = Y_all.map(rule)
 # X_all['HTR'] = X_all['HTR'].map(rule)
@@ -723,7 +723,14 @@ print(results_vc.mean())
 # 0.7745867821871535
 '''
 
-# ------------------- Derive Features of Test Sample -------------
+# -------------------- Results ------------------------- 
+# train_classifier(clf,xtrain,y_train)     # train the classifer
+# sample1 = X_test.sample(n=1, random_state=1)
+# y_pred_sample1 = clf.predict(sample)
+# y_pred_sample1
+
+# ------------------- Final Prediction -------------
+# ------ Derive Features of Test Sample ----
 # ***********************
 # read data
 # url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/epl-test.csv'
@@ -770,16 +777,9 @@ print(results_vc.mean())
 
 # ***************************
 # data_toPredict = data2019_selected.tail(10)
-# -------------------- Results ------------------------- 
-# train_classifier(clf,xtrain,y_train)     # train the classifer
-# sample1 = X_test.sample(n=1, random_state=1)
-# y_pred_sample1 = clf.predict(sample)
-# y_pred_sample1
-# 通过前面的方法预测出来的概率最高的类别即判断结果  [not sure]
-def labelClassifier(H_rate, A_rate, D_rate):
-    pass
 
-# -------------------- Final Prediction ------------------------- 
+
+# --------- Predict result -------  
 # predict result
 #train_classifier(clf1,X_train,y_train)     # train the classifer
 #sample = data2019_selected.tail(10)
