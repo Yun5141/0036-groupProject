@@ -2,7 +2,6 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
 
 from os import chdir
 
@@ -28,10 +27,25 @@ import math
 from collections import deque
 
 # ------------------- import data -------------------------
-url="https://raw.githubusercontent.com/Yun5141/comp0036/master/elp_up-to-date_data.csv"
-training_data=pd.read_csv(url)
+import pandas as pd 
+
+# import training data set
+url="https://raw.githubusercontent.com/Yun5141/comp0036/master/epl-training.csv"
+raw_training_data=pd.read_csv(url)
+
+# import test set
+url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/epl-test.csv'
+rawData_toPred = pd.read_csv(url)
+
+# import 2019 up-to-date data (from http://www.football-data.co.uk)
+url = 'https://raw.githubusercontent.com/Yun5141/comp0036/master/2019EPL.csv'
+rawData_2019_uptodate = pd.read_csv(url)
+
+# import geometric information of teams
 url = "https://raw.githubusercontent.com/Yun5141/comp0036/master/stadiums-with-GPS-coordinates.csv"
 geometricData = pd.read_csv(url)
+
+
 
 
 # ------------------ helper functions -------------------
@@ -423,6 +437,7 @@ def standardize(data,cols):
     for col in cols:
         data[col] = scale(data[col])
 
+    return data
 #standardize(X_all, numList)
 
 # ********************************
@@ -765,10 +780,12 @@ def labelClassifier(H_rate, A_rate, D_rate):
     pass
 
 # -------------------- Final Prediction ------------------------- 
-# after separte 'Home Win' and "Home Lose (ie Away Win or Draw)", need to run once again to classify "Away Wins or Draw"
-# which the process shall be presented in this section I think
-
+# predict result
 #train_classifier(clf1,X_train,y_train)     # train the classifer
 #sample = data2019_selected.tail(10)
 #y_pred = clf1.predict(sample)
 #y_pred  # 1 means home team wins; 0 means away team wins or draw
+
+# write result to file
+# 把y_pred的十个结果与rawData_toPredict连起来
+# 写入submission.csv

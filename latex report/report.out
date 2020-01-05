@@ -1,0 +1,13 @@
+\BOOKMARK [1][-]{section.1}{Introduction [Terry] }{}% 1
+\BOOKMARK [1][-]{section.2}{Data Transformation \046 Exploration [Yun]}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Initial Data Exploration}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Feature Construction}{section.2}% 4
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Distance needed to travel for the away team}{subsection.2.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Delta time from last match for home team and away team}{subsection.2.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{Data Transformation }{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.4}{Second Data Exploration}{section.2}% 8
+\BOOKMARK [1][-]{section.3}{Methodology Overview [Yanke]}{}% 9
+\BOOKMARK [1][-]{section.4}{Model Training \046 Validation [Yanke]}{}% 10
+\BOOKMARK [1][-]{section.5}{Results [Yi]}{}% 11
+\BOOKMARK [1][-]{section.6}{Final Predictions on Test Set [Yusi]}{}% 12
+\BOOKMARK [1][-]{section.7}{Conclusion [Terry]}{}% 13
