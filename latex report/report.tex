@@ -19,7 +19,7 @@
 \usepackage{subfigure}
 
 
-\title{Predicting the Outcome of 2020 English Premier League (EPL) Football Matches}
+\title{Predicting the OutcomHASe of 2020 English Premier League (EPL) Football Matches}
 
 
 \author{
@@ -102,7 +102,7 @@ the total number of shots on goal (HS, AS)  \& that on target (HST, AST) are the
 So, within the top 10 we picked FTHG, FTAG , HS, AS,  HR, AR to create features:
 \begin{itemize}
 \item FTHG, FTAG $\Rightarrow$ the cumulative full-time goal difference by home team and away team [HCGD, ACGD]
-\item HS, AS $\Rightarrow$  the average number of shots on goal in the past 3 matches by home team and away team [HAHS, AAHS]
+\item HS, AS $\Rightarrow$  the average number of shots on goal in the past 3 matches by home team and away team [HAS, AAS]
 \item HR, AR (as features directly) 
 \end{itemize}
 
@@ -144,7 +144,7 @@ From the figure, we can draw such conclusions:
 \begin{itemize}
 \item HR \& AR: The range is very small (2). From the median, the mean and also the small variance we can know that most values are 0 (as these two features are discrete) while value=2 is of low occurrence.
 \item HCGD \& ACGD: Large range (> 130) with negative values involved. The median and the mean demonstrates that there is a relatively greater number of negative values within the data set.
-\item HAHS \& AAHS: Moderate range (around 25) with all positive values. The median and the mean is at the half of the range while the variance is reasonable.
+\item AAS \& AAS: Moderate range (around 25) with all positive values. The median and the mean is at the half of the range while the variance is reasonable.
 \item HDT \& ADT: Similar moderate range (around 25) and variance with the above pair of data. But the median and the mean is at the one third of the range. Outliers may exist.
 \item DIS: Large range (> 450) with all positive values. Reasonable median and mean. But from the variance we can know that the value fluctuates significantly.
 \item Comparing to the other features, the values of HR \& AR are too small while that of DIS too large.
