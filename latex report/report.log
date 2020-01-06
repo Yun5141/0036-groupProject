@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.10.14)  6 JAN 2020 23:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.10.14)  6 JAN 2020 23:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -540,28 +540,28 @@ Package pdftex.def Info: graphs/top-10-features-in-raw-data.png  used on input
 line 88.
 (pdftex.def)             Requested size: 271.01459pt x 267.7022pt.
  [2 <./graphs/matchesPerSeason.png> <./graphs/top-10-features-in-raw-data.png>]
-<graphs/featureSet.png, id=169, 779.91376pt x 408.52625pt>
+<graphs/featureSet.png, id=169, 763.85374pt x 395.4775pt>
 File: graphs/featureSet.png Graphic file (type png)
 <use graphs/featureSet.png>
 Package pdftex.def Info: graphs/featureSet.png  used on input line 120.
-(pdftex.def)             Requested size: 389.95593pt x 204.26262pt.
-<graphs/statistics1.png, id=170, 369.38pt x 508.90125pt>
+(pdftex.def)             Requested size: 381.92593pt x 197.73827pt.
+<graphs/statistics1.png, id=170, 347.2975pt x 495.8525pt>
 File: graphs/statistics1.png Graphic file (type png)
 <use graphs/statistics1.png>
 Package pdftex.def Info: graphs/statistics1.png  used on input line 132.
-(pdftex.def)             Requested size: 150.32503pt x 207.10559pt.
-<graphs/statistics2.png, id=171, 346.29375pt x 509.905pt>
+(pdftex.def)             Requested size: 150.32503pt x 214.63484pt.
+<graphs/statistics2.png, id=171, 347.2975pt x 495.8525pt>
 File: graphs/statistics2.png Graphic file (type png)
 <use graphs/statistics2.png>
 Package pdftex.def Info: graphs/statistics2.png  used on input line 135.
-(pdftex.def)             Requested size: 150.32503pt x 221.34782pt.
-<graphs/statistics3.png, id=172, 369.38pt x 508.90125pt>
+(pdftex.def)             Requested size: 150.32503pt x 214.63484pt.
+<graphs/statistics3.png, id=172, 347.2975pt x 495.8525pt>
 File: graphs/statistics3.png Graphic file (type png)
 <use graphs/statistics3.png>
 Package pdftex.def Info: graphs/statistics3.png  used on input line 138.
-(pdftex.def)             Requested size: 150.32503pt x 207.10559pt.
+(pdftex.def)             Requested size: 150.32503pt x 214.63484pt.
 
-Underfull \vbox (badness 7064) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [3 <./graphs/featureSet.png>] [4 <./graphs/statistics1.png> <./graphs/statisti
 cs2.png> <./graphs/statistics3.png>]
@@ -702,7 +702,7 @@ e/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
 019/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2019/texmf-
 dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts
 /type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (10 pages, 1083562 bytes).
+Output written on report.pdf (10 pages, 1079180 bytes).
 PDF statistics:
  304 PDF objects out of 1000 (max. 8388607)
  258 compressed objects within 3 object streams
