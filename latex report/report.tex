@@ -3,6 +3,7 @@
 
 \usepackage{arxiv}
 
+\usepackage{placeins}
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -36,11 +37,11 @@
 
 
 % -------------------------------------------------------------------------------------------
-\section{Introduction [Terry] }
+\section{Introduction }
 
 
 % -------------------------------------------------------------------------------------------
-\section{Data Transformation \& Exploration [Yun]}
+\section{Data Transformation \& Exploration}
 
 At first sight, we found that:
 \begin{itemize}
@@ -77,25 +78,6 @@ The full set is of huge amount. To help learn the data, we separated rows by dat
 \end{figure}
 
 We found that the number of matches each season stays constant (380).
-
-% ----------------------------
-\subsubsection{Percentage of match result}
-
-We also computed the average percentage of each match result per season and that over the 11 years. See Fig. \ref{fig:FTRPercentage}
-
-\begin{figure}[H]
-\centering  
-\subfigure[]{
-\label{Fig.sub.1}
-\includegraphics[width=0.45\textwidth]{graphs/FTRPercentage1.png}}
-\subfigure[]{
-\label{Fig.sub.2}
-\includegraphics[width=0.45\textwidth]{graphs/FTRPercentage2.png}}
-\caption{Percentage of each match result}
-\label{fig:FTRPercentage}
-\end{figure}
-
-From the result we noticed that in all cases the result 'home team wins' (‘H’) is of the highest probability, and 'H':'A':'D' $\approx$ 5:3:2 in general.
 
 % ----------------------------
 \subsubsection{Relationship between attributes}
@@ -196,13 +178,140 @@ So we introduced the binary features		\\
 such that if, for example, HM1 takes the value of ‘W’,  then HM1\_W = 1, HM1\_L= 0, HM1\_D = 0. 
 
 % -------------------------------------------------------------------------------------------
-\section{Methodology Overview [Yanke]}
+\section{Methodology Overview}
+This section will explain what additional data set have we used. Followed by a brief introduction of some base classifiers we applied. After that, we will discuss what techniques that optimize the performance of classifiers have we used. \\
+%The documentation for \verb+natbib+ may be found at
+%\begin{center}
+  %\url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
+%\end{center}
+%Of note is the command \verb+\citet+, which produces citations
+%appropriate for use in inline text.  For example,
+%\begin{verbatim}
+  % \citet{hasselmo} investigated\dots
+%\end{verbatim}
+%produces
+%\begin{quote}
+ % Hasselmo, et al.\ (1995) investigated\dots
+%\end{quote}
+
+%\begin{center}
+  %\url{https://www.ctan.org/pkg/booktabs}
+%\end{center}
+
+
+\subsection{Data set}
+
+Firstly, we add a feature DIS, which is the distance between the stadiums of the two teams. This is done by using a library 'geopy' which allowed us to estimate the distance of latitude and longitude of the city. Besides, we found the stadium location data from \url{https://github.com/jokecamp/FootballData/blob/master/other/stadiums-with-GPS-coordinates.csv}. Although it does not cover every team that appears in the provided data set, we did manage to add missing data manually.\\\\
+Other features were derived from origin training data. For example, HTdd, home team date delta, means the time between the current match and the previous match of the home team. \\
+
+%\begin{figure}
+ % \centering
+%  \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+%  \caption{Sample figure caption.}
+%  \label{fig:fig1}
+%\end{figure}
+
+\subsection{Base model}
+In this problem, we need to classify match result(FTR) into three categories, so we need to build a multi-class classification model to achieve our goal. Hence we found several classic classification models that are suitable for this problem: Multinomial Logistic Regression, Gaussian Naive Bayes, Linear Discriminant Analysis(LDA), Quadratic Discriminant Analysis(QDA), Decision Tree Classifier, and Multilayer Perceptron(MLP, a class of feedforward artificial neural network). These classifiers can be directly imported from Scikit-learn library, and detailed information of these classifiers can be found at:  \url{https://scikit-learn.org/stable/modules/multiclass.html}\\
+
+\subsection{Model evaluation}
+\subsubsection{F1-score}
+After the first step, we need to evaluate and optimise our model. As a result, we need to find an evaluation standard for our classifiers. We use f1-score as an analysis of the accuracy of the classification model. \\
+The result will be sorted into the matrix. For example, if a result is predicted as false, but the actual result is positive, it will be regarded as TN. 
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.2]{graphs/confusion_matrix.jpeg}
+\caption{Confusion Matrix\cite{6}}
+\label{fig:confusion_matrix}
+\end{figure}
+
+After that, the f1-score is calculated from precision(\( p\)) and recall(\(r\)), where:
+\begin{equation}
+p = \frac{TP}{TP+FP}\\
+\end{equation}
+\begin{equation}
+r = \frac{TP}{TP+FN} \\
+\end{equation}
+\begin{equation}
+f1\_score = 2*\frac{p*r}{p+r}\\
+\end{equation}
+
+It shows that f1-score indicates both precision and recall of a model, while accuracy can be contributed mainly by a large number of True Negatives. In this case, f1-score might be a better measure to use since we need to seek a balance between Precision and Recall\cite{1}
+
+\subsubsection{Cross-Validation}
+Cross-Validation split training set into several folds, then train the model using all folds but one as a training set each time. The remaining folds will be regarded as a validation set. \\
+Cross-Validation allows us to perform validation, but still maintaining the training data set. Thus it will reduce overfitting.
+
+\subsubsection{Parameter optimization}
+A model has many parameters, and diverse parameters produce different model performance. So we need to define a range of parameters to be adjusted for each model and find an approach to seek the best model(with highest f1-score).
+ 
+\subsubsection{Ensemble methods}
+Ensembled methods seek to consolidate the predictions of one or more base models built with a specific learning algorithm in order to improve the performance of a single model.\\\\
+There are two main classes of ensemble methods, which are averaging method and boosting method. The averaging method looks to build several classifiers independently and average their predictions while in boosting methods, base estimators are built sequentially, and one tries to reduce the bias of the combined estimator.\\\\
+Initially, we intended to use a bagging classifier(an averaging method). However, we found from Vu, Braga-Neto, and Dougherty \cite{4}that an empirical basis that ensemble classification by bagging cannot increase the performance of stable classification rules, such as linear discriminant analysis. It seems bagging methods were not a fitting model in this case. As a result, we decide to use boosting methods instead. Based on research by Martínez-Muñoz\cite{3}, Marina and Robert P W\cite{2}, it seems LDA and NN can be theoretically used as the base estimator in boosting model.
+
 
 
 
 % -------------------------------------------------------------------------------------------
-\section{Model Training \& Validation [Yanke]}
+\section{Model Training \& Validation}
+In this section, we created groups of parameters to be optimised for each base model, and then we got six optimised classifier with parameters that has the best f1-score. We also applied cross-validation and generate a cross-validation-score for each model as well. Next, we used them as base-estimator in boosting methods. Finally, we compared the overall performance based on f1-score and cross-validation-score and presented the best estimator.
+\subsection{Optimization of base estimator}
 
+\subsubsection{Cross-Validation}
+KFold function was used to split the training data into ten sets.We use model\_selection.cross\_val\_score function, it generates a cross-validation score for a model based on the given model and k folds. 
+
+\subsubsection{Parameter optimisation}
+A model has many parameters in it. However, we cannot optimse all of them since that will take a massive amount of time to compute. So we select several parameters that could potentially affect the most.
+After we specified a group of parameters for each model, we then pass that as a parameter to train\_predict function together with an f1-scorer. It will use GridSearchCV function to choose parameter with the highest f1-score and produce the best estimator. 
+
+\subsection{Result}
+Now we get the result of the prediction on test set by the six optimised models which is shown below:\\
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=1]{graphs/result_table.png}
+\caption{Parameter optimisation result}
+\label{fig:confusion_matrix}
+\end{figure}\\
+We noticed LDA seems do not change after optimisation, and this could because the parameter group we selected is not large enough, or the default model is already relatively optimised. However, after we tried different possible parameters(some of the parameters are not supported under some particular condition like shrinkage is not supported when the solver is "svd") and increase the range of parameter selection, the result still did not change. So we supposed we could consider the origin setting to be approximately optimised.\\\\
+In addition, the f1-score of NN slightly decreased  after optimisation, and this could because there was some error during fitting or it was slightly overfitted. \\\\
+In general, the performance of most of the models slightly increased after optimisation. This means our optimisation is valuable. 
+
+\subsection{Ensemble methods}
+\subsubsection{Ada boost}
+We used AdaBoostClassifier from scikit-learn as an ensemble method. An AdaBoost classifier is a meta-estimator that starts by fitting a classifier on the original training set and then fits additional copies of the classifier on the same training set but where the weights of incorrectly classified instances are adjusted such that subsequent classifiers focus more on difficult cases.\cite{5}\\\\
+It allows using a single classifier as a base estimator so that we can feed our optimised classifier into it. However, there is some pre-condition to be the base estimator. First, it must provide the "predict\_proba" method, which is not supported by QDA and LDA. We tried implementing the function ourselves and switching algorithms in AdaBoostClassifier, but none of them worked. As a result, we have to give up feed LDA and QDA in ensemble methods. \\\\
+MLP classifier is not supported as well, but we do find an approach to implement the missing attribute in MLP classifier. It now works after we implemented customMLPClassifier class, although the run time for that is remarkably long. We found this solution from: \url{https://stackoverflow.com/questions/55632010/using-scikit-learns-mlpclassifier-in-adaboostclassifier}\\\\
+Moreover, we tried to optimise parameter of the AdaBoostClassifier as well. However, it will take forever to compute. So we dropped this task for this classifier.
+
+\subsubsection{Gradient boost}
+We also found another classifier provided called GradientBoostClassifier. It builds an additive model in a forward stage-wise fashion. it allows for the optimization of arbitrary differentiable loss functions. In each stage n\_classes regression trees are fit on the negative gradient of the binomial or multinomial deviance loss function. \cite{5}\\\\
+There is no base\_estimaor parameter in GradientBoostClassifier. It only has loss as a parameter, which is the loss function, and it can take two values: deviance and exponential. Fortunately, the deviance option is the same with Logistic regression so that we can regard it as a kind of ensemble model on the Logistic Regression classifier.
+
+\subsubsection{Ensemble methods result}
+The result is shown below:\\
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=1]{graphs/ensemble_result_table.png}
+\caption{Ensemble methods result}
+\label{fig:confusion_matrix}
+\end{figure}\\
+We did not do parameter optimisation for AdaBoostClassifier(run-time problem), so the After column is empty. We noticed that the performance of AdaBoostClassifier with Naive Bayes, Decision Tree, and MLP Classifier is worse than that of a single classifier. Another unusual thing here is that AdaBoostClassifier with MLPClassifier as a base estimator has f1-score and accuracy of over 70 when predicting from the training set. It could be evidence of overfitting.
+\subsection{Final model}
+After combining all the results, we noticed that accuracy score of GradientBoostClassifier(after parameter optimisation) is the highest among 11 classifier we tested. Although the f1-score is slightly lower than that of QDA(-0.01) and Neural Network(MLP Classifier)(-0.029), the accuracy is much more higher(+0.0173 and + 0.0243). So we think GradientBoostClassifier is the most suitable model in this case.
+%\begin{table}[]
+%\centering
+%\begin{tabular}{|l|l|l|l|l|}
+%\hline
+ %                                       & \multicolumn{2}{l|}{Before} & \multicolumn{2}{l|}{After}          \\ \cline{2-5} 
+  %                                      & f1-score     & Accuracy     & f1-score         & Accuracy         \\ \hline
+%AdaBoostClassifier(Logistic Regression) & 0.4604       & 0.5407       & \textbackslash{} & \textbackslash{} \\ \hline
+%AdaBoostClassifier(Naive Bayes)         & 0.3258       & 0.3276       & \textbackslash{} & \textbackslash{} \\ \hline
+%AdaBoostClassifier(Decision Tree)       & 0.4160       & 0.4159       & \textbackslash{} & \textbackslash{} \\ \hline
+%AdaBoostClassifier(MLPClassifier)       & 0.4549       & 0.4636       & \textbackslash{} & \textbackslash{} \\ \hline
+%GradientBoostClassifier                 & 0.4703       & 0.5442       & 0.4736           & 0.5442           \\ \hline
+%\end{tabular}
+%\end{table}
 
 
 % -------------------------------------------------------------------------------------------
@@ -211,16 +320,11 @@ such that if, for example, HM1 takes the value of ‘W’,  then HM1\_W = 1, HM1
 
 
 % -------------------------------------------------------------------------------------------
-\section{Final Predictions on Test Set [Yusi]}
-
-
+\section{Final Predictions on Test Set}
 % -------------------------------------------------------
 \subsection{Data Pre-processing}
 
 Before predicting the result we first need to process the test set to fit our model. We applied similar operations as we dealing with the training data. To derive features, we import the up-to-date data of the season 2019 from {\em<http://www.football-data.co.uk>} .
-
-% -------------------------------------------------------
-\subsubsection{Data cleaning}
 
 For the up-to-date data, we first remove all the columns that are not presented in the training set, and then check if any invalid data involved.  As a result, the shape of the data set reduce from 209 rows x 106 columns to 209 rows x 22 columns.
 
@@ -233,34 +337,18 @@ The shape of test set is 10 rows x 3 columns. So we can get the result by simply
 We then concatenate the up-to-date data of season 2019 and the test set and unify the date. See Fig.\ref{fig:rawData2019}
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.5]{graphs/rawData2019.png}
+\includegraphics[scale=0.45]{graphs/rawData2019.png}
 \caption{Data 2019}
 \label{fig:rawData2019}
 \end{figure}
 
-% -------------------------------------------------------
-\subsubsection{Feature derivation}
 Same process with when we handle the training data: select the basic attributes, construct features, remove invalid data and remove intermediate data (i.e., the basic attributes).
-
-% -------------------------------------------------------
-\subsubsection{Data transformation}
 
 We re-scale and standardise numerical features by using the scalers that are fitted with the training data in the previous step. Categorical features are transformed using the same rule as we transforming the training data.
 
 % -------------------------------------------------------
 \subsection{Result Prediction}
-We can now make prediction using the final model we choose to use and the processed 2019 data set. The result is shown in the Fig.\ref{fig:encodedResult},
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.5]{graphs/encodedResult.png}
-\caption{}
-\label{fig:encodedResult}
-\end{figure}
-
-where 1 means 'Home Team Wins', 0 means 'Away Team Wins', 2 means 'Draw'.
-
-So our prediction is such that (Fig.\ref{fig:finalPrediction}):
-
+We can now make prediction using the final model we choose to use and the processed 2019 data set. The result is shown in the Fig.\ref{fig:finalPrediction},
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.5]{graphs/finalPrediction.png}
@@ -283,14 +371,61 @@ So our prediction is such that (Fig.\ref{fig:finalPrediction}):
 %%% Comment out this section when you \bibliography{references} is enabled.
 \begin{thebibliography}{1}
 
+
 \bibitem{1}
+Brownlee, Jason
+\newblock (2014)
+\newblock Classification Accuracy is Not Enough: More Performance Measures You Can Use
+\newblock {\em<https://machinelearningmastery.com/classification-accuracy-is-not-enough-more-performance-measures-you-can-use>}.
+
+\bibitem{2}
+Marina Skurichina; Robert P. W. Duin
+\newblock (2000)
+\newblock Boosting in Linear Discriminant Analysis - Multiple Classifier Systems
+\newblock P.190-199
+\newblock Publisher: Springer Berlin Heidelberg
+\newblock Dec 1st 2000
+\newblock ISBN: 978-3-540-45014-6
+\newblock {\em<https://arxiv.org/abs/1909.12098v1>}.
+
+\bibitem{3}
+Martínez-Muñoz, Gonzalo
+\newblock (2019)
+\newblock Sequential Training of Neural Networks with Gradient Boosting
+\newblock Sep 26th  2019
+\newblock {\em<https://arxiv.org/abs/1909.12098v1>}.
+
+\bibitem{4}
+Thang T. Vu ; Ulisses M. Braga-Neto ; Edward R. Dougherty
+\newblock (2019)
+\newblock Bagging degrades the performance of linear discriminant classifiers
+\newblock July 24th 2009
+\newblock Published in: 2009 IEEE International Workshop on Genomic Signal Processing and Statistics
+\newblock DOI:10.1109/GENSIPS.2009.5174344
+\newblock {\em<https://ieeexplore.ieee.org/document/5174344>}.
+
+ \bibitem{5}
+Scikit-learn
+\newblock (2019)
+\newblock 1.11. Ensemble methods
+\newblock {\em<https://scikit-learn.org/stable/modules/ensemble.html\#ensemble>}.
+
+\bibitem{6}
+Radečić, Dario 
+\newblock (2009)
+\newblock A Non-Confusing Guide to Confusion Matrix
+\newblock Sep 28th 2009
+\newblock {\em<https://towardsdatascience.com/a-non-confusing-guide-to-confusion-matrix-7071d2c2204f>}.
+ 
+
+\bibitem{sharma}
 Sharma, Mohit.
 \newblock What Steps should one take while doing Data Preprocessing?.
 \newblock June 20th 2018.
 \newblock June 1st 2019.
 \newblock {\em<https://hackernoon.com/what-steps-should-one-take-while-doing-data-preprocessing-502c993e1caa>}.
 
-\bibitem{2}
+\bibitem{gonz}
 J. González.
 \newblock Scaling/ normalisation/ standardisation: a pervasive question.
 \newblock Oct 18th 2018.
