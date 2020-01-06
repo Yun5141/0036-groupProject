@@ -15,4 +15,9 @@
 \BOOKMARK [1][-]{section.4}{Model Training \046 Validation [Yanke]}{}% 15
 \BOOKMARK [1][-]{section.5}{Results [Yi]}{}% 16
 \BOOKMARK [1][-]{section.6}{Final Predictions on Test Set [Yusi]}{}% 17
-\BOOKMARK [1][-]{section.7}{Conclusion [Terry]}{}% 18
+\BOOKMARK [2][-]{subsection.6.1}{Data Pre-processing}{section.6}% 18
+\BOOKMARK [3][-]{subsubsection.6.1.1}{Data cleaning}{subsection.6.1}% 19
+\BOOKMARK [3][-]{subsubsection.6.1.2}{Feature derivation}{subsection.6.1}% 20
+\BOOKMARK [3][-]{subsubsection.6.1.3}{Data transformation}{subsection.6.1}% 21
+\BOOKMARK [2][-]{subsection.6.2}{Result Prediction}{section.6}% 22
+\BOOKMARK [1][-]{section.7}{Conclusion [Terry]}{}% 23

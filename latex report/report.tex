@@ -52,7 +52,7 @@ At first sight, we found that:
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.4]{graphs/firstSight.png}
-\caption{}
+\caption{ First sight of training data}
 \label{fig:firstSight}
 \end{figure}
 
@@ -72,7 +72,7 @@ The full set is of huge amount. To help learn the data, we separated rows by dat
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.6]{graphs/matchesPerSeason.png}
-\caption{}
+\caption{Number of matches per season}
 \label{fig:matchesPerSeason}
 \end{figure}
 
@@ -91,7 +91,7 @@ We also computed the average percentage of each match result per season and that
 \subfigure[]{
 \label{Fig.sub.2}
 \includegraphics[width=0.45\textwidth]{graphs/FTRPercentage2.png}}
-\caption{}
+\caption{Percentage of each match result}
 \label{fig:FTRPercentage}
 \end{figure}
 
@@ -104,7 +104,7 @@ We plotted a Pearson Correlation Heatmap (Fig. \ref{fig:top-10-features-in-raw-d
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.3]{graphs/top-10-features-in-raw-data.png}
-\caption{}
+\caption{The top 10 features related to FTR}
 \label{fig:top-10-features-in-raw-data}
 \end{figure}
 
@@ -136,13 +136,13 @@ Due to the lack of data in the beginning of each year, there are a few rows cont
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.5]{graphs/featureSet.png}
-\caption{}
+\caption{Feature set}
 \label{fig:featureSet}
 \end{figure}
 
 % -------------------------------------------------------
 \subsection{Second Data Exploration - Analyse Numerical Features}
-To learn the characteristics of each feature, we derive the minimum, maximum, median, mean, variance and standard deviation:
+To learn the characteristics of each feature, we derived the minimum, maximum, median, mean, variance and standard deviation:
 \begin{figure}[H]
 \centering  
 \subfigure[]{
@@ -154,7 +154,7 @@ To learn the characteristics of each feature, we derive the minimum, maximum, me
 \subfigure[]{
 \label{Fig.sub.5}
 \includegraphics[width=0.32\textwidth]{graphs/statistics3.png}}
-\caption{}
+\caption{ Statistics of each feature column}
 \label{fig:statistics}
 \end{figure}
 
@@ -170,7 +170,7 @@ From the figure, we can draw such conclusions:
 
 % -------------------------------------------------------
 \subsection{Data Transformation}
-% -------------------------------------------------------
+% --------------------------------------
 \subsubsection{Label mapping}
 We mapped the label (i.e., FTR) into numbers for later model training by the rule:
 \begin{itemize}
@@ -179,10 +179,10 @@ We mapped the label (i.e., FTR) into numbers for later model training by the rul
 \item 'D' $\to$ 2
 \end{itemize}
 
-% -------------------------------------------------------
-\subsubsection{Rescale and standardize numerical features}
+% ------------------------------------
+\subsubsection{Rescale and standardize numerical features} \label{`}
 With the conclusions from 3.3, we applied the z-score standardization and min-max rescaling to the numerical features.
-% -------------------------------------------------------
+% -----------------------------------
 \subsubsection{Transform categorical features}
 The categorical data within the feature set is: \\
 		\centerline{HM1,AM1, HM2,AM2, HM3,AM3, }\\
@@ -214,6 +214,59 @@ such that if, for example, HM1 takes the value of ‘W’,  then HM1\_W = 1, HM1
 \section{Final Predictions on Test Set [Yusi]}
 
 
+% -------------------------------------------------------
+\subsection{Data Pre-processing}
+
+Before predicting the result we first need to process the test set to fit our model. We applied similar operations as we dealing with the training data. To derive features, we import the up-to-date data of the season 2019 from {\em<http://www.football-data.co.uk>} .
+
+% -------------------------------------------------------
+\subsubsection{Data cleaning}
+
+For the up-to-date data, we first remove all the columns that are not presented in the training set, and then check if any invalid data involved.  As a result, the shape of the data set reduce from 209 rows x 106 columns to 209 rows x 22 columns.
+
+The shape of test set is 10 rows x 3 columns. So we can get the result by simply looking at the data:
+\begin{itemize}
+\item It only contains three attributes which are all presented in the training set;
+\item There is no rows containing None, NaN, inifinite or overflowed values.
+\end{itemize}
+
+We then concatenate the up-to-date data of season 2019 and the test set and unify the date. See Fig.\ref{fig:rawData2019}
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.5]{graphs/rawData2019.png}
+\caption{Data 2019}
+\label{fig:rawData2019}
+\end{figure}
+
+% -------------------------------------------------------
+\subsubsection{Feature derivation}
+Same process with when we handle the training data: select the basic attributes, construct features, remove invalid data and remove intermediate data (i.e., the basic attributes).
+
+% -------------------------------------------------------
+\subsubsection{Data transformation}
+
+We re-scale and standardise numerical features by using the scalers that are fitted with the training data in the previous step. Categorical features are transformed using the same rule as we transforming the training data.
+
+% -------------------------------------------------------
+\subsection{Result Prediction}
+We can now make prediction using the final model we choose to use and the processed 2019 data set. The result is shown in the Fig.\ref{fig:encodedResult},
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.5]{graphs/encodedResult.png}
+\caption{}
+\label{fig:encodedResult}
+\end{figure}
+
+Where 1 means 'Home Team Wins', 0 means 'Away Team Wins', 2 means 'Draw'.
+
+So our prediction is such that (Fig.\ref{fig:finalPrediction}):
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.5]{graphs/finalPrediction.png}
+\caption{}
+\label{fig:finalPrediction}
+\end{figure}
 
 % -------------------------------------------------------------------------------------------
 \section{Conclusion [Terry]}
