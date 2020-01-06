@@ -411,7 +411,7 @@ def simplifyLabel(label):
 #Y_all = data['FTR']
 
 # map the label into 0, 1, 2    #!!!【the mapping may be unnecessary】
-# rule = {'NH':0,'H':1}
+# rule = {'H':1,'A':0,'D':2}
 # Y_all = Y_all.map(rule)
 # X_all['HTR'] = X_all['HTR'].map(rule)
 
