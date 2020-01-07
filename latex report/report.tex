@@ -359,10 +359,9 @@ The explanations of results are:
 As shown above, there are three possible results: H (HomeTeam win), A (AwayTeam win) and D (Draw). For each result, classifier takes different features as  evaluation criterion:
 \begin{itemize}
 \item[-] As an essential feature representing the player's capability of home team, HCGD (the cumulative full-time goal difference by home team) is the most significant factor for model to predict the final results. More specifically, if HCGD of home team is lower than 0.33 (after normlization), on average, the winning rate of home team would be about 0.11 less.\\
-~\\
 \item[-] Similarly, ACGD (the cumulative full-time goal difference by away team) also plays an important role in final results. However, comparing with HCGD, ACGD has less effect on final results, and the reason for that need to be carefully discussed in future. 
 \\
-item[-] For H/Not H and A/Not A, the classifier also takes HARW (Average number of red cards received by the home team in nearly matches) to determine the winning percentage of home team. From the rules of football match, if a football player get a red card, he will not be permitted to take furthur part in the game and may be banned for next 3 matches, this can be a huge disadvantage in matches.\\
+\item[-] For H/Not H and A/Not A, the classifier also takes HARW (Average number of red cards received by the home team in nearly matches) to determine the winning percentage of home team. From the rules of football match, if a football player get a red card, he will not be permitted to take furthur part in the game and may be banned for next 3 matches, this can be a huge disadvantage in matches.\\
 ~\\
 In the other side, AARW (Average number of red cards received by the away team in nearly matches) does not have clear relationship with final results.
 \\
