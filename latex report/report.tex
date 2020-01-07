@@ -38,7 +38,7 @@
 
 % -------------------------------------------------------------------------------------------
 \section{Introduction }
-
+In this project, we have attempted to predict the outcomes of ten specific Premier League football matches that will take place on 11 January 2020. In order to do this, we will use both data that was provided to us (cleaned and transformed) as well as data that we have independently found and calculated. We have reviewed several machine learning models and performed cross-validation methods to determine the optimal models. We arrived upon a model that uses five features that derive from the data we were given and data that we obtained and calculated. Our predictions are shown at the bottom of this report in figure 13.
 
 % -------------------------------------------------------------------------------------------
 \section{Data Transformation \& Exploration}
@@ -50,12 +50,12 @@ At first sight, we found that:
 \item The involved data is from 2008-08-16 to 2019-05-12 (i.e. totally 11 seasons).
 \end{itemize}
 
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.4]{graphs/firstSight.png}
-\caption{ First sight of training data}
-\label{fig:firstSight}
-\end{figure}
+%\begin{figure}[ht]
+%\centering
+%\includegraphics[scale=0.4]{graphs/firstSight.png}
+%\caption{ First sight of training data}
+%\label{fig:firstSight}
+%\end{figure}
 
 % -------------------------------------------------------
 \subsection{Data Cleaning}
@@ -72,7 +72,7 @@ We then unified the date formats, converting into “\%Y-\%m-\%d” for later ex
 The full set is of huge amount. To help learn the data, we separated rows by date from August to May (i.e., one season) to check how many matches there are per season.
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.6]{graphs/matchesPerSeason.png}
+\includegraphics[scale=0.4]{graphs/matchesPerSeason.png}
 \caption{Number of matches per season}
 \label{fig:matchesPerSeason}
 \end{figure}
@@ -85,7 +85,7 @@ We plotted a Pearson Correlation Heatmap (Fig. \ref{fig:top-10-features-in-raw-d
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.25]{graphs/top-10-features-in-raw-data.png}
+\includegraphics[scale=0.2]{graphs/top-10-features-in-raw-data.png}
 \caption{The top 10 features related to FTR}
 \label{fig:top-10-features-in-raw-data}
 \end{figure}
@@ -126,13 +126,13 @@ To learn the characteristics of each feature, we derived the minimum, maximum, m
 \centering  
 \subfigure[]{
 \label{Fig.sub.3}
-\includegraphics[width=0.3\textwidth]{graphs/statistics1.png}}
+\includegraphics[width=0.25\textwidth]{graphs/statistics1.png}}
 \subfigure[]{
 \label{Fig.sub.4}
-\includegraphics[width=0.3\textwidth]{graphs/statistics2.png}}
+\includegraphics[width=0.25\textwidth]{graphs/statistics2.png}}
 \subfigure[]{
 \label{Fig.sub.5}
-\includegraphics[width=0.3\textwidth]{graphs/statistics3.png}}
+\includegraphics[width=0.25\textwidth]{graphs/statistics3.png}}
 \caption{ Statistics of each feature column}
 \label{fig:statistics}
 \end{figure}
@@ -210,7 +210,7 @@ After the first step, we need to evaluate and optimise our model. As a result, w
 The result will be sorted into the matrix. For example, if a result is predicted as false, but the actual result is positive, it will be regarded as TN. 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.15]{graphs/confusion_matrix.jpeg}
+\includegraphics[scale=0.1]{graphs/confusion_matrix.jpeg}
 \caption{Confusion Matrix\cite{6}}
 \label{fig:confusion_matrix}
 \end{figure}
@@ -218,9 +218,7 @@ The result will be sorted into the matrix. For example, if a result is predicted
 After that, the f1-score is calculated from precision(\( p\)) and recall(\(r\)), where:
 \begin{equation}
 p = \frac{TP}{TP+FP}\ \ \ \
-r = \frac{TP}{TP+FN} \\
-\end{equation}
-\begin{equation}
+r = \frac{TP}{TP+FN} \ \ \ \
 f1\_score = 2*\frac{p*r}{p+r}\\
 \end{equation}
 
@@ -300,7 +298,7 @@ After combining all the results, we noticed that accuracy score of GradientBoost
 
 
 % -------------------------------------------------------------------------------------------
-\section{Results [Yi]}
+\section{Results}
 
 In the application of machine learning model, the prediction of result is the black-box process. Therefore, human cannot understand the prediction from model without corresponding explanation, so the optimisation of model becomes harder, either.
 To achieve that, LIME, an open-source tool to explain the machine learning models, is used to analyse the final result. \\
@@ -393,8 +391,15 @@ We can now make prediction using the final model we choose to use and the proces
 \end{figure}
 
 % -------------------------------------------------------------------------------------------
-\section{Conclusion [Terry]}
+\section{Conclusion}
+In this report, we have analysed data and machine learning models to predict the outcomes of ten specific football matches as seen in Figure 12.  Our model uses five features: 
+1) The adjusted cumulative goal of each team.
+2) The average number of shots on goal in the most recent three games of each team.
+3) The average number of red cards received by each team. 
+4) The distance needed to be travelled by the Away team.
+5) Performance of each team in the most recent three matches.
 
+Further research may involve such factors as time-decaying our historical data to optimise for the higher significance of more recent data. We would also like to investigate the effect of adding market-based data such as historical betting odds between pairings of teams as this data seems to be valuable but was not allowed in this particular assignment. 
 
 
 
