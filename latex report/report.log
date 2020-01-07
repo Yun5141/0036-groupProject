@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.10.14)  6 JAN 2020 23:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.10.14)  7 JAN 2020 03:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -518,7 +518,7 @@ File: omsptm.fd
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 48.
-<graphs/firstSight.png, id=144, 857.2025pt x 517.935pt>
+<graphs/firstSight.png, id=156, 857.2025pt x 517.935pt>
 File: graphs/firstSight.png Graphic file (type png)
 <use graphs/firstSight.png>
 Package pdftex.def Info: graphs/firstSight.png  used on input line 55.
@@ -528,34 +528,34 @@ Package pdftex.def Info: graphs/firstSight.png  used on input line 55.
 
 {/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./graph
 s/firstSight.png>]
-<graphs/matchesPerSeason.png, id=157, 258.9675pt x 204.765pt>
+<graphs/matchesPerSeason.png, id=169, 258.9675pt x 204.765pt>
 File: graphs/matchesPerSeason.png Graphic file (type png)
 <use graphs/matchesPerSeason.png>
 Package pdftex.def Info: graphs/matchesPerSeason.png  used on input line 75.
 (pdftex.def)             Requested size: 155.38168pt x 122.85992pt.
-<graphs/top-10-features-in-raw-data.png, id=159, 903.375pt x 892.33376pt>
+<graphs/top-10-features-in-raw-data.png, id=171, 903.375pt x 892.33376pt>
 File: graphs/top-10-features-in-raw-data.png Graphic file (type png)
 <use graphs/top-10-features-in-raw-data.png>
 Package pdftex.def Info: graphs/top-10-features-in-raw-data.png  used on input 
 line 88.
 (pdftex.def)             Requested size: 271.01459pt x 267.7022pt.
  [2 <./graphs/matchesPerSeason.png> <./graphs/top-10-features-in-raw-data.png>]
-<graphs/featureSet.png, id=169, 763.85374pt x 395.4775pt>
+<graphs/featureSet.png, id=181, 763.85374pt x 395.4775pt>
 File: graphs/featureSet.png Graphic file (type png)
 <use graphs/featureSet.png>
 Package pdftex.def Info: graphs/featureSet.png  used on input line 120.
 (pdftex.def)             Requested size: 381.92593pt x 197.73827pt.
-<graphs/statistics1.png, id=170, 347.2975pt x 495.8525pt>
+<graphs/statistics1.png, id=182, 347.2975pt x 495.8525pt>
 File: graphs/statistics1.png Graphic file (type png)
 <use graphs/statistics1.png>
 Package pdftex.def Info: graphs/statistics1.png  used on input line 132.
 (pdftex.def)             Requested size: 150.32503pt x 214.63484pt.
-<graphs/statistics2.png, id=171, 347.2975pt x 495.8525pt>
+<graphs/statistics2.png, id=183, 347.2975pt x 495.8525pt>
 File: graphs/statistics2.png Graphic file (type png)
 <use graphs/statistics2.png>
 Package pdftex.def Info: graphs/statistics2.png  used on input line 135.
 (pdftex.def)             Requested size: 150.32503pt x 214.63484pt.
-<graphs/statistics3.png, id=172, 347.2975pt x 495.8525pt>
+<graphs/statistics3.png, id=184, 347.2975pt x 495.8525pt>
 File: graphs/statistics3.png Graphic file (type png)
 <use graphs/statistics3.png>
 Package pdftex.def Info: graphs/statistics3.png  used on input line 138.
@@ -563,149 +563,154 @@ Package pdftex.def Info: graphs/statistics3.png  used on input line 138.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [3 <./graphs/featureSet.png>] [4 <./graphs/statistics1.png> <./graphs/statisti
-cs2.png> <./graphs/statistics3.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 182--196
+ [3 <./graphs/featureSet.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 168--171
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 204--206
+Underfull \hbox (badness 10000) in paragraph at lines 168--171
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 204--206
+Underfull \hbox (badness 10000) in paragraph at lines 172--178
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
+Underfull \hbox (badness 10000) in paragraph at lines 172--178
 
  []
 
-<graphs/confusion_matrix.jpeg, id=193, 903.375pt x 702.625pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--178
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--178
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--178
+
+ []
+
+[4 <./graphs/statistics1.png> <./graphs/statistics2.png> <./graphs/statistics3.
+png>]
+<graphs/confusion_matrix.jpeg, id=205, 903.375pt x 702.625pt>
 File: graphs/confusion_matrix.jpeg Graphic file (type jpg)
 <use graphs/confusion_matrix.jpeg>
-Package pdftex.def Info: graphs/confusion_matrix.jpeg  used on input line 223.
+Package pdftex.def Info: graphs/confusion_matrix.jpeg  used on input line 222.
 (pdftex.def)             Requested size: 180.6718pt x 140.5225pt.
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 249--252
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 249--252
-
- []
-
-
-Underfull \vbox (badness 1005) has occurred while \output is active []
+ [5]
+Underfull \vbox (badness 2205) has occurred while \output is active []
 
  [6 <./graphs/confusion_matrix.jpeg>]
-<graphs/result_table.png, id=220, 362.35374pt x 124.465pt>
+<graphs/result_table.png, id=232, 362.35374pt x 124.465pt>
 File: graphs/result_table.png Graphic file (type png)
 <use graphs/result_table.png>
-Package pdftex.def Info: graphs/result_table.png  used on input line 272.
+Package pdftex.def Info: graphs/result_table.png  used on input line 271.
 (pdftex.def)             Requested size: 362.35286pt x 124.46469pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 269--279
+Underfull \vbox (badness 1478) has occurred while \output is active []
 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 269--279
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 282--286
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 282--286
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 282--286
-
- []
-
-
-Underfull \hbox (badness 1072) in paragraph at lines 288--290
-\T1/ptm/m/n/10 (+20) We also found an-other clas-si-fier pro-vided called Gra-d
-i-ent-Boost-Clas-si-fier. It builds an ad-di-tive model in
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 288--290
-
- []
-
-[7 <./graphs/result_table.png>]
-<graphs/ensemble_result_table.png, id=233, 439.6425pt x 101.37875pt>
+ [7 <./graphs/result_table.png>]
+<graphs/ensemble_result_table.png, id=245, 439.6425pt x 101.37875pt>
 File: graphs/ensemble_result_table.png Graphic file (type png)
 <use graphs/ensemble_result_table.png>
-Package pdftex.def Info: graphs/ensemble_result_table.png  used on input line 2
-95.
+Package pdftex.def Info: graphs/ensemble_result_table.png  used on input line 3
+01.
 (pdftex.def)             Requested size: 439.64142pt x 101.3785pt.
-<graphs/rawData2019.png, id=235, 853.1875pt x 595.22375pt>
-File: graphs/rawData2019.png Graphic file (type png)
-<use graphs/rawData2019.png>
-Package pdftex.def Info: graphs/rawData2019.png  used on input line 340.
-(pdftex.def)             Requested size: 383.93083pt x 267.84822pt.
- [8 <./graphs/ensemble_result_table.png>]
-<graphs/finalPrediction.png, id=245, 346.29375pt x 337.26pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 331--332
+
+ []
+
+<graphs/LIMEintro.png, id=247, 526.96875pt x 266.11922pt>
+File: graphs/LIMEintro.png Graphic file (type png)
+<use graphs/LIMEintro.png>
+Package pdftex.def Info: graphs/LIMEintro.png  used on input line 337.
+(pdftex.def)             Requested size: 210.78375pt x 106.44579pt.
+<graphs/LIMEsample.png, id=249, 455.45157pt x 404.26031pt>
+File: graphs/LIMEsample.png Graphic file (type png)
+<use graphs/LIMEsample.png>
+Package pdftex.def Info: graphs/LIMEsample.png  used on input line 347.
+(pdftex.def)             Requested size: 318.81392pt x 282.98029pt.
+<graphs/LIMEresult.png, id=251, 939.13359pt x 553.69359pt>
+File: graphs/LIMEresult.png Graphic file (type png)
+<use graphs/LIMEresult.png>
+Package pdftex.def Info: graphs/LIMEresult.png  used on input line 358.
+(pdftex.def)             Requested size: 375.64677pt x 221.47351pt.
+[8 <./graphs/ensemble_result_table.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 368--369
+
+ []
+
+
+Underfull \vbox (badness 2818) has occurred while \output is active []
+
+ [9 <./graphs/LIMEintro.png> <./graphs/LIMEsample.png>]
+<graphs/finalPrediction.png, id=266, 346.29375pt x 337.26pt>
 File: graphs/finalPrediction.png Graphic file (type png)
 <use graphs/finalPrediction.png>
-Package pdftex.def Info: graphs/finalPrediction.png  used on input line 354.
+Package pdftex.def Info: graphs/finalPrediction.png  used on input line 392.
 (pdftex.def)             Requested size: 173.14644pt x 168.62958pt.
-
-Underfull \vbox (badness 2856) has occurred while \output is active []
-
- [9 <./graphs/rawData2019.png> <./graphs/finalPrediction.png>]
-Underfull \hbox (badness 6675) in paragraph at lines 414--419
+ [10 <./graphs/LIMEresult.png>]
+Underfull \hbox (badness 6675) in paragraph at lines 452--457
 []\T1/ptm/m/n/10 (+20) Rade£i¢, Dario  (2009)  A Non-Confusing Guide to Con-fu-
 sion Ma-trix  Sep 28th 2009
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 440.
-[10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 440.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 478.
+[11 <./graphs/finalPrediction.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 478.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 440.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 440.
-Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: FDE58C39E0B1E465EFA8D649CF2764B1;2492.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 478.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 478.
 
+
+Package rerunfilecheck Warning: File `report.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `report.out':
+(rerunfilecheck)             Before: 4CF79DF13C4CEA88426296F7F8ED0E07;2702
+(rerunfilecheck)             After:  FFADFDE752D28146CF8F00A5535B03E5;2635.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 440.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 478.
  ) 
 Here is how much of TeX's memory you used:
- 9249 strings out of 492616
- 145985 string characters out of 6129480
- 269131 words of memory out of 5000000
- 12839 multiletter control sequences out of 15000+600000
+ 9272 strings out of 492616
+ 146398 string characters out of 6129480
+ 269236 words of memory out of 5000000
+ 12853 multiletter control sequences out of 15000+600000
  43765 words of font info for 119 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,11n,45p,713b,431s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/t
-exlive/2019/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/tex
-live/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texl
-ive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texliv
-e/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
-/2019/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2
-019/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2019/texmf-
-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts
-/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (10 pages, 1079180 bytes).
+ 38i,11n,45p,711b,429s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{figure.caption.13} has been referenced but does n
+ot exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.6.2} has been referenced but does not ex
+ist, replaced by a fixed one
+
+{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/tex
+live/2019/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texli
+ve/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texliv
+e/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/
+2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
+019/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/201
+9/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2019/texmf-di
+st/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/t
+ype1/urw/times/utmri8a.pfb>
+Output written on report.pdf (11 pages, 1530971 bytes).
 PDF statistics:
- 304 PDF objects out of 1000 (max. 8388607)
- 258 compressed objects within 3 object streams
- 71 named destinations out of 1000 (max. 500000)
- 22869 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 328 PDF objects out of 1000 (max. 8388607)
+ 280 compressed objects within 3 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 22903 words of extra memory for PDF output out of 24883 (max. 10000000)
 

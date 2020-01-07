@@ -103,7 +103,7 @@ So, within the top 10 we picked FTHG, FTAG , HS, AS,  HR, AR to create features:
 \begin{itemize}
 \item FTHG, FTAG $\Rightarrow$ the cumulative full-time goal difference by home team and away team [HCGD, ACGD]
 \item HS, AS $\Rightarrow$  the average number of shots on goal in the past 3 matches by home team and away team [HAS, AAS]
-\item HR, AR (as features directly) 
+\item HR, AR $\Rightarrow$  the average number of red cards got per week by home team and away team [HARW, AARW]
 \end{itemize}
 
 Apart from that, we also derived features from the following attributes:
@@ -142,12 +142,11 @@ To learn the characteristics of each feature, we derived the minimum, maximum, m
 
 From the figure, we can draw such conclusions:
 \begin{itemize}
-\item HR \& AR: The range is very small (2). From the median, the mean and also the small variance we can know that most values are 0 (as these two features are discrete) while value=2 is of low occurrence.
+\item HARW \& AARW: The range is very small (around 0.5). Comparing to the other features, the values of these two are too small.
 \item HCGD \& ACGD: Large range (> 130) with negative values involved. The median and the mean demonstrates that there is a relatively greater number of negative values within the data set.
 \item AAS \& AAS: Moderate range (around 25) with all positive values. The median and the mean is at the half of the range while the variance is reasonable.
 \item HDT \& ADT: Similar moderate range (around 25) and variance with the above pair of data. But the median and the mean is at the one third of the range. Outliers may exist.
-\item DIS: Large range (> 450) with all positive values. Reasonable median and mean. But from the variance we can know that the value fluctuates significantly.
-\item Comparing to the other features, the values of HR \& AR are too small while that of DIS too large.
+\item DIS: Large range (> 450) with all positive values. Reasonable median and mean. But from the variance we can know that the value fluctuates significantly. Comparing to the others, the value is too large.HARW
 \end{itemize}
 
 % -------------------------------------------------------
@@ -166,20 +165,20 @@ We mapped the label (i.e., FTR) into numbers for later model training by the rul
 With the conclusions from 3.3, we applied the z-score standardization and min-max rescaling to the numerical features.
 % -----------------------------------
 \subsubsection{Transform categorical features}
-The categorical data within the feature set is: \\
-		\centerline{HM1,AM1, HM2,AM2, HM3,AM3, }\\
+The categorical data within the feature set is: \\\\
+		\centerline{HM1,AM1, HM2,AM2, HM3,AM3, }\\\\
 which only take the values {‘W’, ‘L’, ‘D’}.
 
-So we introduced the binary features		\\
-\centerline{HM1\_W, HM1\_L, HM1\_D}	\\
-\centerline{AM1\_W, AM1\_L, AM1\_D}		\\	
-\centerline{......}		\\
-\centerline{AM3\_W, AM3\_L, AM3\_D}		\\
+So we introduced the binary features		\\\\
+\centerline{HM1\_W, HM1\_L, HM1\_D}	\\\\
+\centerline{AM1\_W, AM1\_L, AM1\_D}		\\\\	
+\centerline{......}		\\\\
+\centerline{AM3\_W, AM3\_L, AM3\_D}		\\\\
 such that if, for example, HM1 takes the value of ‘W’,  then HM1\_W = 1, HM1\_L= 0, HM1\_D = 0. 
 
 % -------------------------------------------------------------------------------------------
 \section{Methodology Overview}
-This section will explain what additional data set have we used. Followed by a brief introduction of some base classifiers we applied. After that, we will discuss what techniques that optimize the performance of classifiers have we used. \\
+This section will explain what additional data set have we used. Followed by a brief introduction of some base classifiers we applied. After that, we will discuss what techniques that optimize the performance of classifiers have we used. 
 %The documentation for \verb+natbib+ may be found at
 %\begin{center}
   %\url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
@@ -198,11 +197,11 @@ This section will explain what additional data set have we used. Followed by a b
   %\url{https://www.ctan.org/pkg/booktabs}
 %\end{center}
 
-
 \subsection{Data set}
 
-Firstly, we add a feature DIS, which is the distance between the stadiums of the two teams. This is done by using a library 'geopy' which allowed us to estimate the distance of latitude and longitude of the city. Besides, we found the stadium location data from \url{https://github.com/jokecamp/FootballData/blob/master/other/stadiums-with-GPS-coordinates.csv}. Although it does not cover every team that appears in the provided data set, we did manage to add missing data manually.\\\\
-Other features were derived from origin training data. For example, HTdd, home team date delta, means the time between the current match and the previous match of the home team. \\
+Firstly, we add a feature DIS, which is the distance between the stadiums of the two teams. This is done by using a library 'geopy' which allowed us to estimate the distance of latitude and longitude of the city. Besides, we found the stadium location data from \url{https://github.com/jokecamp/FootballData/blob/master/other/stadiums-with-GPS-coordinates.csv}. Although it does not cover every team that appears in the provided data set, we did manage to add missing data manually.
+
+Other features were derived from origin training data. For example, HTdd, home team date delta, means the time between the current match and the previous match of the home team. 
 
 %\begin{figure}
  % \centering
@@ -212,7 +211,7 @@ Other features were derived from origin training data. For example, HTdd, home t
 %\end{figure}
 
 \subsection{Base model}
-In this problem, we need to classify match result(FTR) into three categories, so we need to build a multi-class classification model to achieve our goal. Hence we found several classic classification models that are suitable for this problem: Multinomial Logistic Regression, Gaussian Naive Bayes, Linear Discriminant Analysis(LDA), Quadratic Discriminant Analysis(QDA), Decision Tree Classifier, and Multilayer Perceptron(MLP, a class of feedforward artificial neural network). These classifiers can be directly imported from Scikit-learn library, and detailed information of these classifiers can be found at:  \url{https://scikit-learn.org/stable/modules/multiclass.html}\\
+In this problem, we need to classify match result(FTR) into three categories, so we need to build a multi-class classification model to achieve our goal. Hence we found several classic classification models that are suitable for this problem: Multinomial Logistic Regression, Gaussian Naive Bayes, Linear Discriminant Analysis(LDA), Quadratic Discriminant Analysis(QDA), Decision Tree Classifier, and Multilayer Perceptron(MLP, a class of feedforward artificial neural network). These classifiers can be directly imported from Scikit-learn library, and detailed information of these classifiers can be found at:  \url{https://scikit-learn.org/stable/modules/multiclass.html}
 
 \subsection{Model evaluation}
 \subsubsection{F1-score}
@@ -246,16 +245,16 @@ Cross-Validation allows us to perform validation, but still maintaining the trai
 A model has many parameters, and diverse parameters produce different model performance. So we need to define a range of parameters to be adjusted for each model and find an approach to seek the best model(with highest f1-score).
  
 \subsubsection{Ensemble methods}
-Ensembled methods seek to consolidate the predictions of one or more base models built with a specific learning algorithm in order to improve the performance of a single model.\\\\
-There are two main classes of ensemble methods, which are averaging method and boosting method. The averaging method looks to build several classifiers independently and average their predictions while in boosting methods, base estimators are built sequentially, and one tries to reduce the bias of the combined estimator.\\\\
+Ensembled methods seek to consolidate the predictions of one or more base models built with a specific learning algorithm in order to improve the performance of a single model.
+
+There are two main classes of ensemble methods, which are averaging method and boosting method. The averaging method looks to build several classifiers independently and average their predictions while in boosting methods, base estimators are built sequentially, and one tries to reduce the bias of the combined estimator.
+
 Initially, we intended to use a bagging classifier(an averaging method). However, we found from Vu, Braga-Neto, and Dougherty \cite{4}that an empirical basis that ensemble classification by bagging cannot increase the performance of stable classification rules, such as linear discriminant analysis. It seems bagging methods were not a fitting model in this case. As a result, we decide to use boosting methods instead. Based on research by Martínez-Muñoz\cite{3}, Marina and Robert P W\cite{2}, it seems LDA and NN can be theoretically used as the base estimator in boosting model.
-
-
-
 
 % -------------------------------------------------------------------------------------------
 \section{Model Training \& Validation}
 In this section, we created groups of parameters to be optimised for each base model, and then we got six optimised classifier with parameters that has the best f1-score. We also applied cross-validation and generate a cross-validation-score for each model as well. Next, we used them as base-estimator in boosting methods. Finally, we compared the overall performance based on f1-score and cross-validation-score and presented the best estimator.
+
 \subsection{Optimization of base estimator}
 
 \subsubsection{Cross-Validation}
@@ -272,20 +271,27 @@ Now we get the result of the prediction on test set by the six optimised models 
 \includegraphics[scale=1]{graphs/result_table.png}
 \caption{Parameter optimisation result}
 \label{fig:confusion_matrix}
-\end{figure}\\
-We noticed LDA seems do not change after optimisation, and this could because the parameter group we selected is not large enough, or the default model is already relatively optimised. However, after we tried different possible parameters(some of the parameters are not supported under some particular condition like shrinkage is not supported when the solver is "svd") and increase the range of parameter selection, the result still did not change. So we supposed we could consider the origin setting to be approximately optimised.\\\\
-In addition, the f1-score of NN slightly decreased  after optimisation, and this could because there was some error during fitting or it was slightly overfitted. \\\\
+\end{figure}
+
+We noticed LDA seems do not change after optimisation, and this could because the parameter group we selected is not large enough, or the default model is already relatively optimised. However, after we tried different possible parameters(some of the parameters are not supported under some particular condition like shrinkage is not supported when the solver is "svd") and increase the range of parameter selection, the result still did not change. So we supposed we could consider the origin setting to be approximately optimised.
+
+In addition, the f1-score of NN slightly decreased  after optimisation, and this could because there was some error during fitting or it was slightly overfitted. 
+
 In general, the performance of most of the models slightly increased after optimisation. This means our optimisation is valuable. 
 
 \subsection{Ensemble methods}
 \subsubsection{Ada boost}
-We used AdaBoostClassifier from scikit-learn as an ensemble method. An AdaBoost classifier is a meta-estimator that starts by fitting a classifier on the original training set and then fits additional copies of the classifier on the same training set but where the weights of incorrectly classified instances are adjusted such that subsequent classifiers focus more on difficult cases.\cite{5}\\\\
-It allows using a single classifier as a base estimator so that we can feed our optimised classifier into it. However, there is some pre-condition to be the base estimator. First, it must provide the "predict\_proba" method, which is not supported by QDA and LDA. We tried implementing the function ourselves and switching algorithms in AdaBoostClassifier, but none of them worked. As a result, we have to give up feed LDA and QDA in ensemble methods. \\\\
-MLP classifier is not supported as well, but we do find an approach to implement the missing attribute in MLP classifier. It now works after we implemented customMLPClassifier class, although the run time for that is remarkably long. We found this solution from: \url{https://stackoverflow.com/questions/55632010/using-scikit-learns-mlpclassifier-in-adaboostclassifier}\\\\
+We used AdaBoostClassifier from scikit-learn as an ensemble method. An AdaBoost classifier is a meta-estimator that starts by fitting a classifier on the original training set and then fits additional copies of the classifier on the same training set but where the weights of incorrectly classified instances are adjusted such that subsequent classifiers focus more on difficult cases.\cite{5}
+
+It allows using a single classifier as a base estimator so that we can feed our optimised classifier into it. However, there is some pre-condition to be the base estimator. First, it must provide the "predict\_proba" method, which is not supported by QDA and LDA. We tried implementing the function ourselves and switching algorithms in AdaBoostClassifier, but none of them worked. As a result, we have to give up feed LDA and QDA in ensemble methods. 
+
+MLP classifier is not supported as well, but we do find an approach to implement the missing attribute in MLP classifier. It now works after we implemented customMLPClassifier class, although the run time for that is remarkably long. We found this solution from: \url{https://stackoverflow.com/questions/55632010/using-scikit-learns-mlpclassifier-in-adaboostclassifier}
+
 Moreover, we tried to optimise parameter of the AdaBoostClassifier as well. However, it will take forever to compute. So we dropped this task for this classifier.
 
 \subsubsection{Gradient boost}
-We also found another classifier provided called GradientBoostClassifier. It builds an additive model in a forward stage-wise fashion. it allows for the optimization of arbitrary differentiable loss functions. In each stage n\_classes regression trees are fit on the negative gradient of the binomial or multinomial deviance loss function. \cite{5}\\\\
+We also found another classifier provided called GradientBoostClassifier. It builds an additive model in a forward stage-wise fashion. it allows for the optimization of arbitrary differentiable loss functions. In each stage n\_classes regression trees are fit on the negative gradient of the binomial or multinomial deviance loss function. \cite{5}
+
 There is no base\_estimaor parameter in GradientBoostClassifier. It only has loss as a parameter, which is the loss function, and it can take two values: deviance and exponential. Fortunately, the deviance option is the same with Logistic regression so that we can regard it as a kind of ensemble model on the Logistic Regression classifier.
 
 \subsubsection{Ensemble methods result}
@@ -315,66 +321,61 @@ After combining all the results, we noticed that accuracy score of GradientBoost
 
 
 % -------------------------------------------------------------------------------------------
-\section{Results [Yi]}
+\section{Results }
 
-In the application of machine learning model, the prediction of result is the black-box process. Therefore, human cannot understand the prediction from model without corresponding explanation, so the optimization of model becomes harder, either.\\
-~\\
+In the application of machine learning model, the prediction of result is the black-box process. Therefore, human cannot understand the prediction from model without corresponding explanation, so the optimization of model becomes harder, either.
 
-To achieve that, LIME, an open-source tool to explain the machine learning models, is used to analyse final result. \\
+To achieve that, LIME, an open-source tool to explain the machine learning models, is used to analyse final result. 
 
 \subsection{Introduction of LIME}
 In order to explore the behaviors of models, LIME will perturb the input to approximate the black-box model by a simple interpretable one. It means the explanation can cover most of samples but not all of them.\\
-~\\
-There is an example about how LIME explaining the model:
+
+There is an example about how LIME explaining the model (Fig.\ref{fig:LIMEintro}):
 
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.4]{graphs/LIMEintro.png}
 \caption{}
-\label{fig:label}
+\label{fig:LIMEintro}
 \end{figure}
 
 \subsection{Explanation of Samples}
-To understand the trained model, we will take these 3 matches as samples:
+To understand the trained model, we will take these 3 matches as samples (Fig.\ref{fig:LIMEsample}):
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.4]{graphs/LIMEsample.png}
+\includegraphics[scale=0.7]{graphs/LIMEsample.png}
 \caption{}
-\label{fig:label}
+\label{fig:LIMEsample}
 \end{figure}
 
-For the explainer, it shows the five top features which influence the prediction of final results.\\
-~\\
-The explanations of results are:
+For the explainer, it shows the five top features which influence the prediction of final results.
+
+The explanations of results are shown in Fig.\ref{fig:LIMEresult}.
 
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.4]{graphs/LIMEresult.png}
 \caption{}
-\label{fig:label}
+\label{fig:LIMEresult}
 \end{figure}
 
 \subsection{Analysis \& Insights}
 As shown above, there are three possible results: H (HomeTeam win), A (AwayTeam win) and D (Draw). For each result, classifier takes different features as  evaluation criterion:
 \begin{itemize}
-\item[-] For H/Not H and A/Not A, this classifier takes HR (Average number of red cards received by the home team in nearly matches) as the most significant feature to determine the winning percentage of home team. In the other words, if a home team did not get any red cards in the matche, on average, the winning rate of home team would be about 0.17 higher. \\
-~\\
+\item[-] For H/Not H and A/Not A, this classifier takes HR (Average number of red cards received by the home team in nearly matches) as the most significant feature to determine the winning percentage of home team. In the other words, if a home team did not get any red cards in the matche, on average, the winning rate of home team would be about 0.17 higher. 
+
 From the rules of football match, if a football player get a red card, he will not be permitted to take furthur part in the game, this can be regarded as an disadvantage in matches.\\
 
 \item[-] Similarly, AR (Average number of red cards received by the away team in nearly matches) also plays an important role in final results. However, comparing with HR, AR has less effect on final results. The reason for that need to be carefully discussed in future. 
-\\
 
-\item[-] As an essential feature representing the player's capability of home team, HCGD (the cumulative full-time goal difference by home team) cannot be neglected, either. The rise of HCGD can effectively increase the possibility of hometeam-win.\\
-~\\
+\item[-] As an essential feature representing the player's capability of home team, HCGD (the cumulative full-time goal difference by home team) cannot be neglected, either. The rise of HCGD can effectively increase the possibility of hometeam-win.
+
 In the other side, ACGD (the cumulative full-time goal difference by away team) does not have clear relationship with final results.
-\\
 
 \item[-] The possibility of Draw is related to a number of factors, such as AR, HCGD, and AHS. Nevertheless, each one of them does not have more impact on final results than others. The explanation of these 3 samples illustrates that Draw might be a coincident to some extent under particular situation.
-\\
 
 \item[-] This explanation also reveal that HDT/ADT (the delta time from last match of home team and away tea) and DIS (distance between two teams) have little effect on results. 
-\\
 
 \end{itemize}
 
@@ -385,29 +386,7 @@ In the other side, ACGD (the cumulative full-time goal difference by away team) 
 
 Before predicting the result we first need to process the test set to fit our model. We applied similar operations as we dealing with the training data. To derive features, we import the up-to-date data of the season 2019 from {\em<http://www.football-data.co.uk>} .
 
-For the up-to-date data, we first remove all the columns that are not presented in the training set, and then check if any invalid data involved.  As a result, the shape of the data set reduce from 209 rows x 106 columns to 209 rows x 22 columns.
-
-The shape of test set is 10 rows x 3 columns. So we can get the result by simply looking at the data:
-\begin{itemize}
-\item It only contains three attributes which are all presented in the training set;
-\item There is no rows containing None, NaN, inifinite or overflowed values.
-\end{itemize}
-
-We then concatenate the up-to-date data of season 2019 and the test set and unify the date. See Fig.\ref{fig:rawData2019}
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.45]{graphs/rawData2019.png}
-\caption{Data 2019}
-\label{fig:rawData2019}
-\end{figure}
-
-Same process with when we handle the training data: select the basic attributes, construct features, remove invalid data and remove intermediate data (i.e., the basic attributes).
-
-We re-scale and standardise numerical features by using the scalers that are fitted with the training data in the previous step. Categorical features are transformed using the same rule as we transforming the training data.
-
-% -------------------------------------------------------
-\subsection{Result Prediction}
-We can now make prediction using the final model we choose to use and the processed 2019 data set. The result is shown in the Fig.\ref{fig:finalPrediction},
+Our prediction is shown in the Fig.\ref{fig:finalPrediction},
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.5]{graphs/finalPrediction.png}
