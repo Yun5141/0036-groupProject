@@ -317,7 +317,66 @@ After combining all the results, we noticed that accuracy score of GradientBoost
 % -------------------------------------------------------------------------------------------
 \section{Results [Yi]}
 
+In the application of machine learning model, the prediction of result is the black-box process. Therefore, human cannot understand the prediction from model without corresponding explanation, so the optimization of model becomes harder, either.\\
+~\\
 
+To achieve that, LIME, an open-source tool to explain the machine learning models, is used to analyse final result. \\
+
+\subsection{Introduction of LIME}
+In order to explore the behaviors of models, LIME will perturb the input to approximate the black-box model by a simple interpretable one. It means the explanation can cover most of samples but not all of them.\\
+~\\
+There is an example about how LIME explaining the model:
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.4]{graphs/LIMEintro.png}
+\caption{}
+\label{fig:label}
+\end{figure}
+
+\subsection{Explanation of Samples}
+To understand the trained model, we will take these 3 matches as samples:
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.4]{graphs/LIMEsample.png}
+\caption{}
+\label{fig:label}
+\end{figure}
+
+For the explainer, it shows the five top features which influence the prediction of final results.\\
+~\\
+The explanations of results are:
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.4]{graphs/LIMEresult.png}
+\caption{}
+\label{fig:label}
+\end{figure}
+
+\subsection{Analysis \& Insights}
+As shown above, there are three possible results: H (HomeTeam win), A (AwayTeam win) and D (Draw). For each result, classifier takes different features as  evaluation criterion:
+\begin{itemize}
+\item[-] For H/Not H and A/Not A, this classifier takes HR (Average number of red cards received by the home team in nearly matches) as the most significant feature to determine the winning percentage of home team. In the other words, if a home team did not get any red cards in previous some matches, on average, the winning rate of home team would be about 0.17 higher. \\
+~\\
+From the rules of football match, if a football player get a red card, he may be banned for next 3 matches, this can be regarded as an disadvantage in matches.\\
+
+\item[-] Similarly, AR (Average number of red cards received by the away team in nearly matches) also plays an important role in final results. However, comparing with HR, AR has less effect on final results. The reason for that need to be carefully discussed in future. 
+\\
+
+\item[-] As an essential feature representing the player's capability of home team, HCGD (the cumulative full-time goal difference by home team) cannot be neglected, either. The rise of HCGD can effectively increase the possibility of hometeam-win.\\
+~\\
+In the other side, ACGD (the cumulative full-time goal difference by away team) does not have clear relationship with final results.
+\\
+
+\item[-] The possibility of Draw is related to a number of factors, such as AR, HCGD, and AHS. Nevertheless, each one of them does not have more impact on final results than others. The explanation of these 3 samples illustrates that Draw might be a coincident to some extent under particular situation.
+\\
+
+\item[-] This explanation also reveal that HDT/ADT (the delta time from last match of home team and away tea) and DIS (distance between two teams) have little effect on results. 
+\\
+
+\end{itemize}
 
 % -------------------------------------------------------------------------------------------
 \section{Final Predictions on Test Set}
