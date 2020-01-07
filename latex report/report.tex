@@ -85,7 +85,7 @@ We plotted a Pearson Correlation Heatmap (Fig. \ref{fig:top-10-features-in-raw-d
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.3]{graphs/top-10-features-in-raw-data.png}
+\includegraphics[scale=0.25]{graphs/top-10-features-in-raw-data.png}
 \caption{The top 10 features related to FTR}
 \label{fig:top-10-features-in-raw-data}
 \end{figure}
@@ -114,28 +114,25 @@ Apart from that, we also derived features from the following attributes:
 \end{itemize}
 
 Due to the lack of data in the beginning of each year, there are a few rows containing empty values. After removing these rows and also the intermediate data (which we used to create features), the feature set is shown in  Fig. \ref{fig:featureSet}.
-
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.5]{graphs/featureSetWithLabel.png}
+\includegraphics[scale=0.4]{graphs/featureSetWithLabel.png}
 \caption{Feature set}
 \label{fig:featureSet}
 \end{figure}
-
-% -------------------------------------------------------
 \subsection{Second Data Exploration - Analyse Numerical Features}
 To learn the characteristics of each feature, we derived the minimum, maximum, median, mean, variance and standard deviation:
 \begin{figure}[H]
 \centering  
 \subfigure[]{
 \label{Fig.sub.3}
-\includegraphics[width=0.32\textwidth]{graphs/statistics1.png}}
+\includegraphics[width=0.3\textwidth]{graphs/statistics1.png}}
 \subfigure[]{
 \label{Fig.sub.4}
-\includegraphics[width=0.32\textwidth]{graphs/statistics2.png}}
+\includegraphics[width=0.3\textwidth]{graphs/statistics2.png}}
 \subfigure[]{
 \label{Fig.sub.5}
-\includegraphics[width=0.32\textwidth]{graphs/statistics3.png}}
+\includegraphics[width=0.3\textwidth]{graphs/statistics3.png}}
 \caption{ Statistics of each feature column}
 \label{fig:statistics}
 \end{figure}
@@ -197,7 +194,7 @@ such that if, for example, HM1 takes the value of ‘W’,  then HM1\_W = 1, HM1
   %\url{https://www.ctan.org/pkg/booktabs}
 %\end{center}
 \subsection{Data set}
-Firstly, we add a feature DIS, which is the distance between the stadiums of the two teams. This is done by using a library 'geopy' which allowed us to estimate the distance of latitude and longitude of the city. Besides, we found the stadium location data from \url{https://github.com/jokecamp/FootballData/blob/master/other/stadiums-with-GPS-coordinates.csv}. Although it does not cover every team that appears in the provided data set, we did manage to add missing data manually.\\\\
+Firstly, we add a feature DIS, which is the distance between the stadiums of the two teams. This is done by using a library 'geopy' which allowed us to estimate the distance of latitude and longitude of the city. Besides, we found the stadium location data from \url{https://github.com/jokecamp/FootballData/blob/master/other/stadiums-with-GPS-coordinates.csv}. Although it does not cover every team that appears in the provided data set, we did manage to add missing data manually.\\
 Other features were derived from origin training data. For example, HTdd, home team date delta, means the time between the current match and the previous match of the home team. \\
 %\begin{figure}
  % \centering
@@ -213,7 +210,7 @@ After the first step, we need to evaluate and optimise our model. As a result, w
 The result will be sorted into the matrix. For example, if a result is predicted as false, but the actual result is positive, it will be regarded as TN. 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.2]{graphs/confusion_matrix.jpeg}
+\includegraphics[scale=0.15]{graphs/confusion_matrix.jpeg}
 \caption{Confusion Matrix\cite{6}}
 \label{fig:confusion_matrix}
 \end{figure}
@@ -276,9 +273,8 @@ Moreover, we tried to optimise parameter of the AdaBoostClassifier as well. Howe
 \subsubsection{Gradient boost}
 We also found another classifier provided called GradientBoostClassifier. It builds an additive model in a forward stage-wise fashion. In each stage n\_classes regression trees are fit on the negative gradient of the binomial or multinomial deviance loss function. \cite{5}\\
 There is no base\_estimaor parameter in GradientBoostClassifier. It only has loss as a parameter, which is the loss function, and it can take two values: deviance and exponential. Fortunately, the deviance option is the same with Logistic regression so that we can regard it as a kind of ensemble model on the Logistic Regression classifier.
-
 \subsubsection{Ensemble methods result}
-The result is shown below:\\
+The result is shown in Fig. 8.\\
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.7]{graphs/ensemble_result_table.png}
@@ -306,14 +302,10 @@ After combining all the results, we noticed that accuracy score of GradientBoost
 % -------------------------------------------------------------------------------------------
 \section{Results [Yi]}
 
-In the application of machine learning model, the prediction of result is the black-box process. Therefore, human cannot understand the prediction from model without corresponding explanation, so the optimisation of model becomes harder, either.\\
-~\\
-
+In the application of machine learning model, the prediction of result is the black-box process. Therefore, human cannot understand the prediction from model without corresponding explanation, so the optimisation of model becomes harder, either.
 To achieve that, LIME, an open-source tool to explain the machine learning models, is used to analyse the final result. \\
-
 \subsection{Introduction of LIME}
 In order to explore the behaviors of models, LIME will perturb the input to approximate the black-box model by a simple interpretable one. It means the explanation can cover most of samples but not all of them.\\
-~\\
 There is an example about how LIME explaining the model:
 
 \begin{figure}[ht]
