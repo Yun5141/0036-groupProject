@@ -19,7 +19,7 @@
 \usepackage{subfigure}
 
 
-\title{Predicting the OutcomHASe of 2020 English Premier League (EPL) Football Matches}
+\title{Predicting the Outcomes of 2020 English Premier League (EPL) Football Matches}
 
 
 \author{
@@ -38,7 +38,7 @@
 
 % -------------------------------------------------------------------------------------------
 \section{Introduction }
-In this project, we have attempted to predict the outcomes of ten specific Premier League football matches that will take place on 11 January 2020. In order to do this, we will use both data that was provided to us (cleaned and transformed) as well as data that we have independently found and calculated. We have reviewed several machine learning models and performed cross-validation methods to determine the optimal models. We arrived upon a model that uses five features that derive from the data we were given and data that we obtained and calculated. Our predictions are shown at the bottom of this report in figure 13.
+In this project, we have attempted to predict the outcomes of ten specific Premier League football matches that will take place on 11 January 2020. In order to do this, we will use both data that was provided to us (cleaned and transformed) as well as data that we have independently found and calculated. We have reviewed several machine learning models and performed cross-validation methods to determine the optimal models. We arrived upon a model that uses five features that derive from the data we were given and data that we obtained and calculated. Our predictions are shown at the bottom of this report in Fig.\ref{fig:finalPrediction}.
 
 % -------------------------------------------------------------------------------------------
 \section{Data Transformation \& Exploration}
@@ -70,14 +70,8 @@ We then unified the date formats, converting into “\%Y-\%m-\%d” for later ex
 % ----------------------------
 \subsubsection{Number of matches per season}
 The full set is of huge amount. To help learn the data, we separated rows by date from August to May (i.e., one season) to check how many matches there are per season.
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.4]{graphs/matchesPerSeason.png}
-\caption{Number of matches per season}
-\label{fig:matchesPerSeason}
-\end{figure}
 
-We found that the number of matches each season stays constant (380).
+We found that the number stays constant (380).
 
 % ----------------------------
 \subsubsection{Relationship between attributes}
@@ -90,8 +84,8 @@ We plotted a Pearson Correlation Heatmap (Fig. \ref{fig:top-10-features-in-raw-d
 \label{fig:top-10-features-in-raw-data}
 \end{figure}
 
-As shown in the graph, the top 10 features are: \\
-\centerline{HTR,  FTHG, HTHG, HST, HS, HR, AS, AST, HTAG, FTAG,}	\\
+As shown in the graph, the top 10 features are: \\\\
+\centerline{HTR,  FTHG, HTHG, HST, HS, HR, AS, AST, HTAG, FTAG,}	\\\\
 ordered from the greatest to least.
 
 It is notable that the goal scored at full time (FTHG, FTAG)  \& goal scored at half time (HTHG, HTAG) and
@@ -103,7 +97,7 @@ So, within the top 10 we picked FTHG, FTAG , HS, AS,  HR, AR to create features:
 \begin{itemize}
 \item FTHG, FTAG $\Rightarrow$ the cumulative full-time goal difference by home team and away team [HCGD, ACGD]
 \item HS, AS $\Rightarrow$  the average number of shots on goal in the past 3 matches by home team and away team [HAS, AAS]
-\item HR, AR (as features directly) 
+\item HR, AR $\Rightarrow$ the average red card got per match week by home team and away team [HARW, AARW]
 \end{itemize}
 
 Apart from that, we also derived features from the following attributes:
@@ -139,12 +133,11 @@ To learn the characteristics of each feature, we derived the minimum, maximum, m
 
 From the figure, we can draw such conclusions:
 \begin{itemize}
-\item HR \& AR: The range is very small (2). From the median, the mean and also the small variance we can know that most values are 0 (as these two features are discrete) while value=2 is of low occurrence.
 \item HCGD \& ACGD: Large range (> 130) with negative values involved. The median and the mean demonstrates that there is a relatively greater number of negative values within the data set.
-\item AAS \& AAS: Moderate range (around 25) with all positive values. The median and the mean is at the half of the range while the variance is reasonable.
-\item HDT \& ADT: Similar moderate range (around 25) and variance with the above pair of data. But the median and the mean is at the one third of the range. Outliers may exist.
-\item DIS: Large range (> 450) with all positive values. Reasonable median and mean. But from the variance we can know that the value fluctuates significantly.
-\item Comparing to the other features, the values of HR \& AR are too small while that of DIS too large.
+\item HAS \& AAS: Moderate range (around 25) with all positive values. The median and the mean is at the half of the range while the variance is reasonable.
+\item HARW \& AARW: The range is very small (around 0.5). Comparing to the other features, the values of  these two are too small 
+\item HDT \& ADT: Similar moderate range (around 25) and variance with HAS \& AAS. But the median and the mean is at the one third of the range. Outliers may exist.
+\item DIS: Large range (> 450) with all positive values. Reasonable median and mean. But from the variance we can know that the value fluctuates significantly. Comparing to the others, its value is too large
 \end{itemize}
 
 % -------------------------------------------------------
@@ -163,15 +156,15 @@ We mapped the label (i.e., FTR) into numbers for later model training by the rul
 With the conclusions from 3.3, we applied the z-score standardization and min-max rescaling to the numerical features.
 % -----------------------------------
 \subsubsection{Transform categorical features}
-The categorical data within the feature set is: \\
-		\centerline{HM1,AM1, HM2,AM2, HM3,AM3, }\\
+The categorical data within the feature set is: \\\\
+		\centerline{HM1,AM1, HM2,AM2, HM3,AM3, }\\\\
 which only take the values {‘W’, ‘L’, ‘D’}.
 
-So we introduced the binary features		\\
-\centerline{HM1\_W, HM1\_L, HM1\_D}	\\
-\centerline{AM1\_W, AM1\_L, AM1\_D}		\\	
-\centerline{......}		\\
-\centerline{AM3\_W, AM3\_L, AM3\_D}		\\
+So we introduced the binary features		\\\\
+\centerline{HM1\_W, HM1\_L, HM1\_D}	\\\\
+\centerline{AM1\_W, AM1\_L, AM1\_D}		\\\\	
+\centerline{......}		\\\\
+\centerline{AM3\_W, AM3\_L, AM3\_D}		\\\\
 such that if, for example, HM1 takes the value of ‘W’,  then HM1\_W = 1, HM1\_L= 0, HM1\_D = 0. 
 
 % -------------------------------------------------------------------------------------------
@@ -250,12 +243,12 @@ A model has many parameters in it. However, we cannot optimise all of them since
 After we specified a group of parameters for each model, we then pass that as a parameter to train\_predict function together with an f1-scorer. It will use GridSearchCV function to choose parameter with the highest f1-score and produce the best estimator. 
 
 \subsection{Result}
-Now we get the result of the prediction on test set by the six optimised models which is shown in Fig. 7.
+Now we get the result of the prediction on test set by the six optimised models which is shown in Fig. \ref{fig:result_table}.
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.7]{graphs/result_table.png}
 \caption{Parameter optimisation result}
-\label{fig:confusion_matrix}
+\label{fig:result_table}
 \end{figure}\\
 We noticed LDA seems do not change after optimisation, and this could because the parameter group we selected is not large enough, or the default model is already relatively optimised. However, after we tried different possible parameters(some of the parameters are not supported under some particular condition, so not all parameters are modifiable) and increase the range of parameter selection, the result still did not change. So we supposed we could consider the origin setting to be approximately optimised.\\
 In addition, the f1-score of NN slightly decreased  after optimisation, and this could because there was some error during fitting or it was slightly overfitted. \\
@@ -272,12 +265,12 @@ Moreover, we tried to optimise parameter of the AdaBoostClassifier as well. Howe
 We also found another classifier provided called GradientBoostClassifier. It builds an additive model in a forward stage-wise fashion. In each stage n\_classes regression trees are fit on the negative gradient of the binomial or multinomial deviance loss function. \cite{5}\\
 There is no base\_estimaor parameter in GradientBoostClassifier. It only has loss as a parameter, which is the loss function, and it can take two values: deviance and exponential. Fortunately, the deviance option is the same with Logistic regression so that we can regard it as a kind of ensemble model on the Logistic Regression classifier.
 \subsubsection{Ensemble methods result}
-The result is shown in Fig. 8.\\
+The result is shown in Fig. \ref{fig:ensemble_result_table}.\\
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.7]{graphs/ensemble_result_table.png}
 \caption{Ensemble methods result}
-\label{fig:confusion_matrix}
+\label{fig:ensemble_result_table}
 \end{figure}\\
 We did not do parameter optimisation for AdaBoostClassifier(run-time problem), so the After column is empty. We noticed that the performance of AdaBoostClassifier with Naive Bayes, Decision Tree, and MLP Classifier is worse than that of a single classifier. Another unusual thing here is that AdaBoostClassifier with MLPClassifier as a base estimator has f1-score and accuracy of over 70 when predicting from the training set. It could be evidence of overfitting.
 \subsection{Final model}
@@ -314,24 +307,24 @@ There is an example about how LIME explaining the model:
 \end{figure}
 
 \subsection{Explanation of Samples}
-To understand the trained model, we will take these 3 matches as samples:
+To understand the trained model, we will take these 3 matches as samples (Fig.\ref{fig:LIMEsample}):
 
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.4]{graphs/LIMEsample.png}
 \caption{}
-\label{fig:label}
+\label{fig:LIMEsample}
 \end{figure}
 
 For the explainer, it shows the five top features which influence the prediction of final results.\\
 ~\\
-The explanations of results are:
+The explanations of results are (Fig.\ref{fig:LIMEresult}):
 
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.4]{graphs/LIMEresult.png}
 \caption{}
-\label{fig:label}
+\label{fig:LIMEresult}
 \end{figure}
 
 \subsection{Analysis \& Insights}
